@@ -1,0 +1,12 @@
+.\output\mi_foc.o: ..\MATLAB\MI_FOC.c
+.\output\mi_foc.o: ..\MATLAB\MI_FOC.h
+.\output\mi_foc.o: ..\MATLAB\rtwtypes.h
+.\output\mi_foc.o: ..\MATLAB\mw_cmsis.h
+.\output\mi_foc.o: ..\CMSIS\Core\arm_math.h
+.\output\mi_foc.o: ..\CMSIS\Core\core_cm4.h
+.\output\mi_foc.o: B:\Application\KEIL_537\ARM\ARMCC\Bin\..\include\stdint.h
+.\output\mi_foc.o: ..\CMSIS\Core\core_cmInstr.h
+.\output\mi_foc.o: ..\CMSIS\Core\core_cmFunc.h
+.\output\mi_foc.o: ..\CMSIS\Core\core_cm4_simd.h
+.\output\mi_foc.o: B:\Application\KEIL_537\ARM\ARMCC\Bin\..\include\string.h
+.\output\mi_foc.o: B:\Application\KEIL_537\ARM\ARMCC\Bin\..\include\math.h
