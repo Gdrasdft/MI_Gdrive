@@ -1,1 +1,6 @@
----- uint16_t Matches (0 in 0 files) ----
+---- __SYSTEM_CLOCK_120M_PLL_HXTAL Matches (5 in 1 files) ----
+system_gd32f30x.c (B:\1_GDR_Factory\GD32\03_LED_useGDSDK\CMSIS\SYS\Src) line 55 : #define __SYSTEM_CLOCK_120M_PLL_HXTAL           (uint32_t)(120000000)
+system_gd32f30x.c (B:\1_GDR_Factory\GD32\03_LED_useGDSDK\CMSIS\SYS\Src) line 102 : #elif defined (__SYSTEM_CLOCK_120M_PLL_HXTAL)
+system_gd32f30x.c (B:\1_GDR_Factory\GD32\03_LED_useGDSDK\CMSIS\SYS\Src) line 103 : uint32_t SystemCoreClock = __SYSTEM_CLOCK_120M_PLL_HXTAL;
+system_clock_config in system_gd32f30x.c (B:\1_GDR_Factory\GD32\03_LED_useGDSDK\CMSIS\SYS\Src) : #elif defined (__SYSTEM_CLOCK_120M_PLL_HXTAL)
+system_gd32f30x.c (B:\1_GDR_Factory\GD32\03_LED_useGDSDK\CMSIS\SYS\Src) line 815 : #elif defined (__SYSTEM_CLOCK_120M_PLL_HXTAL)

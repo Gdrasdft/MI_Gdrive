@@ -42,6 +42,10 @@ OF SUCH DAMAGE.
 #include "BSP_drv8323rs.h"
 #include "BSP_MotorPwm.h"
 #include "BSP_AdcSample.h"
+#include "BSP_Clock.h"
+#include "BSP_Port.h"
+
+
 #include "MI_FOC.h"
 
 /* led spark function */

@@ -87,8 +87,6 @@ static uint8_t KEY_IRQn[KEYn]                  = {WAKEUP_KEY_EXTI_IRQn,
 */
 void  gd_eval_led_init (led_typedef_enum lednum)
 {
-    /* enable the led clock */
-    rcu_periph_clock_enable(GPIO_CLK[lednum]);
     /* configure led GPIO port */ 
     gpio_init(GPIO_PORT[lednum], GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ,GPIO_PIN[lednum]);
 
@@ -205,18 +203,6 @@ void gd_eval_com_init(uint32_t com)
     }else if(EVAL_COM1 == com){
         com_id = 1U;
     }
-    
-    /* enable GPIO clock */
-    rcu_periph_clock_enable(COM_GPIO_CLK[com_id]);
-
-    /* enable USART clock */
-    rcu_periph_clock_enable(COM_CLK[com_id]);
-
-    /* connect port to USARTx_Tx */
-    gpio_init(COM_GPIO_PORT[com_id], GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, COM_TX_PIN[com_id]);
-
-    /* connect port to USARTx_Rx */
-    gpio_init(COM_GPIO_PORT[com_id], GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, COM_RX_PIN[com_id]);
 
     /* USART configure */
     usart_deinit(com);

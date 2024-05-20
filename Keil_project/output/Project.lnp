@@ -34,6 +34,8 @@
 ".\output\bsp_drv8323rs.o"
 ".\output\bsp_motorpwm.o"
 ".\output\bsp_adcsample.o"
+".\output\bsp_clock.o"
+".\output\bsp_port.o"
 ".\output\mi_foc.o"
 --library_type=microlib --strict --scatter ".\output\Project.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols

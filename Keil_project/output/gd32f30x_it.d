@@ -40,5 +40,7 @@
 .\output\gd32f30x_it.o: ..\Utilties\Inc\BSP_drv8323rs.h
 .\output\gd32f30x_it.o: ..\Utilties\Inc\BSP_MotorPwm.h
 .\output\gd32f30x_it.o: ..\Utilties\Inc\BSP_AdcSample.h
+.\output\gd32f30x_it.o: ..\Utilties\Inc\BSP_Clock.h
+.\output\gd32f30x_it.o: ..\Utilties\Inc\BSP_Port.h
 .\output\gd32f30x_it.o: ..\MATLAB\MI_FOC.h
 .\output\gd32f30x_it.o: ..\MATLAB\rtwtypes.h

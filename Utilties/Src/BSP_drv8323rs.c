@@ -72,16 +72,6 @@ static uint16_t GenCmd_drv(uint8_t Adress, uint8_t RW, uint16_t Data)
 */
 void spi1_config(void)
 {
-	rcu_periph_clock_enable(RCU_GPIOA);
-	rcu_periph_clock_enable(RCU_GPIOB);
-    rcu_periph_clock_enable(RCU_SPI1);
-
-    gpio_init(GPIOB, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_13 | GPIO_PIN_15);
-    gpio_init(GPIOB, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_14);
-    /* PA3 as NSS */
-	gpio_init(GPIOA, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_11);
-    gpio_init(GPIOB, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_12);
-
     spi_parameter_struct spi_init_struct;
 
     /* SPI0 parameter config */

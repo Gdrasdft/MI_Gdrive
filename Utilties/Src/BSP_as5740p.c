@@ -41,25 +41,10 @@ static uint16_t SPI_EVEN(uint16_t Frame)
     \param[out] none
     \retval     none
 */
-void spi_config(void)
+void spi2_config(void)
 {
-	rcu_periph_clock_enable(RCU_GPIOA);
-    rcu_periph_clock_enable(RCU_GPIOC);
-    rcu_periph_clock_enable(RCU_SPI2);
-    rcu_periph_clock_enable(RCU_AF);
-
-	//4.重映射配置：JTAG-DP禁用和SW-DP使能	
-	gpio_pin_remap_config(GPIO_SWJ_SWDPENABLE_REMAP,ENABLE);
-	gpio_pin_remap_config(GPIO_SPI2_REMAP, ENABLE);
-    /* SPI0 GPIO config:SCK/PC10, MISO/PC11, MOSI/PC12 */
-    gpio_init(GPIOC, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_10 | GPIO_PIN_12);
-    gpio_init(GPIOC, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_11);
-    /* PA15 as NSS */
-    gpio_init(GPIOA, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_15);
-
     spi_parameter_struct spi_init_struct;
-
-    /* SPI0 parameter config */
+    /* SPI2 parameter config */
     spi_init_struct.trans_mode           = SPI_TRANSMODE_FULLDUPLEX;
     spi_init_struct.device_mode          = SPI_MASTER;
     spi_init_struct.frame_size           = SPI_FRAMESIZE_16BIT;
@@ -109,7 +94,11 @@ uint16_t GenCmd2Write(uint16_t Command)
     \brief      Generate CMD_W to send
     \param[in]  Adress
     \param[out] uint16_t cmd
-    \retval     none
+    \retval     Angle at Last Step
+    Read---Read---Read---Read---Read
+    	 \	    \	   \	  \
+    	  \	     \	    \	   \
+    	   Angle--Angle--Angle--Anglen
 */
 uint16_t  AS5047_GetAngle(void)
 {

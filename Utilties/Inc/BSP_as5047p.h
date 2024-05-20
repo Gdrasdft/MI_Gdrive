@@ -30,7 +30,7 @@
 #define AS5047_ANGLEUNC 0x3FFE
 #define AS5047_ANGLECOM 0x3FFF
 
-void spi_config(void);
+void spi2_config(void);
 uint16_t GenCmd2Read(uint16_t Adress);
 uint16_t GenCmd2Write(uint16_t Command);
 uint16_t  AS5047_GetAngle(void);

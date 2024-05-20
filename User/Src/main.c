@@ -56,23 +56,37 @@ int main(void)
     /* configure systick */
     systick_config();
 	
-    gd_eval_led_init(LED3);
+	/* configure perphieal clock */
+	clock_config();
+	
+	/* configure Port */
+	Port_Config();
+
+	/* configure Usart */
 	gd_eval_com_init(EVAL_COM1);
+
+	/* configure Adc */
 	adc_config();
-	spi_config();
+	
+	/* configure SPI2 -- AS5740P */
+	spi2_config();
+	
+	/* configure SPI1 -- Drv8323 */
 	spi1_config();
 	
 	delay_1ms(50);
-	//DRV8323_Init_ResultPrint();
+	DRV8323_Init_ResultPrint();
+
+	
 	timer_config();
 	MI_FOC_initialize();
 	
     while (1)
 	{
 		//drv8323rs_data = Drv8323_ReadData(Fault_Status1);
-		//angle_phy = (float)(AS5047_GetAngle())/ANGLE_DIGITAL*ANGLE_CYCLE;
+//		angle_phy = (float)(AS5047_GetAngle())/ANGLE_DIGITAL*ANGLE_CYCLE;
 		//printf("\r\n CURRENT FaultStatus = %d", drv8323rs_data);
-        //printf("\r\n CURRENT ANGLE = %.3f", angle_phy);
+//        printf("CURRENT ANGLE: %f\n", angle_phy);
         /*timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_0,pulse-1);
 		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_1,0);
 		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_2,0);
@@ -102,7 +116,7 @@ int main(void)
 		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_1,0);
 		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_2,pulse/2-1);
 		delay_1ms(Time);*/
-		printf("ThreePhase: %f,%f,%f,%f,%f,%f,%f\n",SVPWM_OutCmp.Tcmp1,SVPWM_OutCmp.Tcmp2,SVPWM_OutCmp.Tcmp3,ClarkeCur.Ialpha,ClarkeCur.Ibeta,Park_Cur.Id,Park_Cur.Iq);
+		//printf("ThreePhase: %f,%f,%f,%f,%f,%f,%f\n",SVPWM_OutCmp.Tcmp1,SVPWM_OutCmp.Tcmp2,SVPWM_OutCmp.Tcmp3,ClarkeCur.Ialpha,ClarkeCur.Ibeta,Park_Cur.Id,Park_Cur.Iq);
 	}
 }
 /*!
@@ -171,7 +185,7 @@ void Report_Drv8323_FaultInfo(void)
 		if(Current_FaultInfo == BIT(i))
 		{
 			ErrCode = i;
-			printf("\r\n ErrCode is %d",ErrCode);
+			//printf("\r\n ErrCode is %d",ErrCode);
 			return;
 		}
 	}

@@ -665,6 +665,16 @@
               <FileType>1</FileType>
               <FilePath>..\Utilties\Src\BSP_AdcSample.c</FilePath>
             </File>
+            <File>
+              <FileName>BSP_Clock.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Utilties\Src\BSP_Clock.c</FilePath>
+            </File>
+            <File>
+              <FileName>BSP_Port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Utilties\Src\BSP_Port.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1341,6 +1351,16 @@
               <FileType>1</FileType>
               <FilePath>..\Utilties\Src\BSP_AdcSample.c</FilePath>
             </File>
+            <File>
+              <FileName>BSP_Clock.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Utilties\Src\BSP_Clock.c</FilePath>
+            </File>
+            <File>
+              <FileName>BSP_Port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Utilties\Src\BSP_Port.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -1939,6 +1959,16 @@
               <FileName>BSP_AdcSample.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Utilties\Src\BSP_AdcSample.c</FilePath>
+            </File>
+            <File>
+              <FileName>BSP_Clock.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Utilties\Src\BSP_Clock.c</FilePath>
+            </File>
+            <File>
+              <FileName>BSP_Port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Utilties\Src\BSP_Port.c</FilePath>
             </File>
           </Files>
         </Group>

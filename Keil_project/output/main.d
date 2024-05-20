@@ -44,5 +44,7 @@
 .\output\main.o: ..\Utilties\Inc\BSP_drv8323rs.h
 .\output\main.o: ..\Utilties\Inc\BSP_MotorPwm.h
 .\output\main.o: ..\Utilties\Inc\BSP_AdcSample.h
+.\output\main.o: ..\Utilties\Inc\BSP_Clock.h
+.\output\main.o: ..\Utilties\Inc\BSP_Port.h
 .\output\main.o: ..\MATLAB\MI_FOC.h
 .\output\main.o: ..\MATLAB\rtwtypes.h
