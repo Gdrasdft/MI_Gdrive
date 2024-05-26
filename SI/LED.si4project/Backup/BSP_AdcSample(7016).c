@@ -75,6 +75,8 @@ void adc_config(void)
     adc_interrupt_flag_clear(MI_FOC_ADC, ADC_INT_FLAG_EOC);
     adc_interrupt_flag_clear(MI_FOC_ADC, ADC_INT_FLAG_EOIC);
 	adc_interrupt_enable(MI_FOC_ADC, ADC_INT_EOIC);
-
+    /* enable ADC interrupt */
+	//nvic_priority_group_set(NVIC_PRIGROUP_PRE1_SUB3);
+    nvic_irq_enable(ADC0_1_IRQn, 1, 0);
 }
 

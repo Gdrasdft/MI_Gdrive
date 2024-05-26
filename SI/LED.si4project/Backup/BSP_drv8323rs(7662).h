@@ -197,11 +197,6 @@ typedef union DATA_FRAME_DRV
 
 void spi1_config(void);
 uint16_t DRV8323_Init_Device(void);
-void DRV8323_Init_ResultPrint(void);
-void Report_Drv8323_FaultInfo(void);
-void DRV8323_DeviceReset(void);
-void DRV8323_FaultReset(void);
-
 uint16_t  Drv8323_ReadData(uint8_t address);
 uint16_t Drv8323_WriteCmd(uint8_t address,uint16_t cmd);
 

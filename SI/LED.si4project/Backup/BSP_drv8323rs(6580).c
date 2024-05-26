@@ -75,6 +75,7 @@ void spi1_config(void)
 	spi_init(SPI1, &spi_init_struct);
 	ENABLE_DRV8323
 	spi_enable(SPI1);
+
 }
 
 
@@ -189,22 +190,6 @@ uint16_t DRV8323_Init_Device(void)
 	return Result;
 }
 
-void DRV8323_FaultReset(void)
-{
-	if(Drv8323_ReadData(Fault_Status1) != 0 || Drv8323_ReadData(Fault_Status2) != 0)
-	{
-		DRI_CTL_DATA.cmd = Drv8323_ReadData(Driver_Control);
-		DRI_CTL_DATA.reg.CLR_FLT = 1;
-		Drv8323_WriteCmd(Driver_Control,DRI_CTL_DATA.cmd);
-	}
-}
-
-void DRV8323_DeviceReset(void)
-{
-	DISABLE_DRV8323;
-	delay_1ms(1);
-	ENABLE_DRV8323;
-}
 
 void DRV8323_Init_ResultPrint(void)
 {
@@ -232,7 +217,6 @@ void DRV8323_Init_ResultPrint(void)
 	}
 
 }
-
 void Report_Drv8323_FaultInfo(void)
 {
 	static uint32_t Last_FaultInfo;

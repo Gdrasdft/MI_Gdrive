@@ -68,22 +68,19 @@ void NVIC_Config(void)
 	/* pre-emption priority: 0 BIT*/
 	/* subpriority: 4 BIT*/
 	nvic_priority_group_set(NVIC_PRIGROUP_PRE0_SUB4);
-	
-	/* configure the EXTI handler priority */
-    NVIC_SetPriority(EXTI10_15_IRQn, 0x01U);
 
+	/* configure the systick handler priority */
+    NVIC_SetPriority(ADC0_1_IRQn, 0x01U);\
 
-	/* configure the ADC handler priority */
-    NVIC_SetPriority(ADC0_1_IRQn, 0x02U);
+	/* configure the systick handler priority */
+    NVIC_SetPriority(ADC0_1_IRQn, 0x01U);
 
 }
 
 void System_Interrup_Enable(void)
 {
 	/* enable ADC interrupt */
-    NVIC_EnableIRQ(ADC0_1_IRQn);
-	/* enable EXTI interrupt */
-    NVIC_EnableIRQ(EXTI10_15_IRQn);
+    nvic_irq_enable(ADC0_1_IRQn, 1, 0);	
 }
 
 

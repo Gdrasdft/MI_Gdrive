@@ -6,11 +6,9 @@
 #endif
 
 #include "gd32f30x.h"
-#include "gd32f307c_eval.h"
 
 void Port_Config(void);
 
-void led_spark(void);
 
 
 

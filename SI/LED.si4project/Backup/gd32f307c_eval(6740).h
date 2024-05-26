@@ -149,7 +149,7 @@ void gd_eval_com_init(uint32_t com);
 
 extern uint16_t adc_value[4];
 extern float angle_phy;
-extern uint16_t drv8323rs_data[4];
+extern uint16_t drv8323rs_data;
 
 
 #ifdef __cplusplus

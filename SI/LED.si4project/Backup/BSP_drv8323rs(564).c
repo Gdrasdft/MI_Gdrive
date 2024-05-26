@@ -22,11 +22,21 @@ Csa_Ctl OSA_CTL_DATA;
 */
 static void DRV8323_nFAULT_EXTI(void)
 {
+    /* enable the key clock */
+    rcu_periph_clock_enable(GPIO_CLK_FAULT);
+    rcu_periph_clock_enable(RCU_AF);
+
+    /* configure button pin as input */
+    gpio_init(GPIO_PORT_FAULT, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_FAULT);
+
+    /* enable and set nFAULT EXTI interrupt to the lowest priority */
+    nvic_irq_enable(FAULT_EXTI_IRQn, 1U, 0U);
+
     /* connect key EXTI line to key GPIO pin */
     gpio_exti_source_select(FAULT_EXTI_PORT_SOURCE, FAULT_EXTI_PIN_SOURCE);
 
     /* configure key EXTI line */
-    exti_init(FAULT_EXTI_LINE, EXTI_INTERRUPT, EXTI_TRIG_FALLING);
+    exti_init(FAULT_EXTI_LINE, EXTI_INTERRUPT, EXTI_TRIG_BOTH);
     exti_interrupt_flag_clear(FAULT_EXTI_LINE);
 }
 
@@ -75,40 +85,7 @@ void spi1_config(void)
 	spi_init(SPI1, &spi_init_struct);
 	ENABLE_DRV8323
 	spi_enable(SPI1);
-}
 
-
-
-/*!
-    \brief      Generate CMD_W to send
-    \param[in]  Adress
-    \param[out] uint16_t cmd
-    \retval     none
-*/
-uint16_t  Drv8323_ReadData(uint8_t address)
-{
-	Drv_Receive_Frame.data_receive_drv = 0;
-	SET_DRV8323_NSS_LOW
-	while(RESET == spi_i2s_flag_get(SPI1,SPI_FLAG_TBE)){}
-	spi_i2s_data_transmit(SPI1,GenCmd_drv(address, READ_DATA, 0x00));
-
-	while(SET == spi_i2s_flag_get(SPI1,SPI_FLAG_TRANS)){}
-	Drv_Receive_Frame.data_receive_drv = spi_i2s_data_receive(SPI1);
-	SET_DRV8323_NSS_HIGH
-	return Drv_Receive_Frame.data_bit_drv.DATA;
-}
-
-uint16_t Drv8323_WriteCmd(uint8_t address,uint16_t cmd)
-{
-	SET_DRV8323_NSS_LOW
-	while(RESET == spi_i2s_flag_get(SPI1,SPI_FLAG_TBE)){}
-	spi_i2s_data_transmit(SPI1,GenCmd_drv(address, WRITE_CMD, cmd));
-
-	while(SET == spi_i2s_flag_get(SPI1,SPI_FLAG_TRANS)){}
-	Drv_Receive_Frame.data_receive_drv = spi_i2s_data_receive(SPI1);
-	
-	SET_DRV8323_NSS_HIGH
-	return Drv_Receive_Frame.data_bit_drv.DATA;
 }
 
 /*!
@@ -189,64 +166,37 @@ uint16_t DRV8323_Init_Device(void)
 	return Result;
 }
 
-void DRV8323_FaultReset(void)
+
+/*!
+    \brief      Generate CMD_W to send
+    \param[in]  Adress
+    \param[out] uint16_t cmd
+    \retval     none
+*/
+uint16_t  Drv8323_ReadData(uint8_t address)
 {
-	if(Drv8323_ReadData(Fault_Status1) != 0 || Drv8323_ReadData(Fault_Status2) != 0)
-	{
-		DRI_CTL_DATA.cmd = Drv8323_ReadData(Driver_Control);
-		DRI_CTL_DATA.reg.CLR_FLT = 1;
-		Drv8323_WriteCmd(Driver_Control,DRI_CTL_DATA.cmd);
-	}
+	Drv_Receive_Frame.data_receive_drv = 0;
+	SET_DRV8323_NSS_LOW
+	while(RESET == spi_i2s_flag_get(SPI1,SPI_FLAG_TBE)){}
+	spi_i2s_data_transmit(SPI1,GenCmd_drv(address, READ_DATA, 0x00));
+
+	while(SET == spi_i2s_flag_get(SPI1,SPI_FLAG_TRANS)){}
+	Drv_Receive_Frame.data_receive_drv = spi_i2s_data_receive(SPI1);
+	SET_DRV8323_NSS_HIGH
+	return Drv_Receive_Frame.data_bit_drv.DATA;
 }
 
-void DRV8323_DeviceReset(void)
+uint16_t Drv8323_WriteCmd(uint8_t address,uint16_t cmd)
 {
-	DISABLE_DRV8323;
-	delay_1ms(1);
-	ENABLE_DRV8323;
-}
+	SET_DRV8323_NSS_LOW
+	while(RESET == spi_i2s_flag_get(SPI1,SPI_FLAG_TBE)){}
+	spi_i2s_data_transmit(SPI1,GenCmd_drv(address, WRITE_CMD, cmd));
 
-void DRV8323_Init_ResultPrint(void)
-{
-	uint16_t Result = 0;
-	Result = DRV8323_Init_Device();
-	switch(Result)
-	{
-		case 1: 
-		printf("\r\n Init Drive_Control_Reg FAIL...");
-		break;
-		case 2: 
-		printf("\r\n Init Gate_DriveHS_Reg FAIL...");
-		break;
-		case 3: 
-		printf("\r\n Init Gate_DriveLS_Reg FAIL...");
-		break;
-		case 4: 
-		printf("\r\n Init OCP_Control_Reg FAIL...");
-		break;
-		case 5: 
-		printf("\r\n Init CSA_Control_Reg FAIL...");
-		break;
-		default:
-		printf("\r\n DRV8323RS Init Success!");
-	}
-
-}
-
-void Report_Drv8323_FaultInfo(void)
-{
-	static uint32_t Last_FaultInfo;
-	Drv8323_FaultInfo = (((uint32_t)Drv8323_ReadData(Fault_Status1))<<11) | (((uint32_t)Drv8323_ReadData(Fault_Status2))<<0);
-	Current_FaultInfo = Drv8323_FaultInfo - Last_FaultInfo;
-	for(int i=0;i<21;i++)
-	{
-		if(Current_FaultInfo == BIT(i))
-		{
-			ErrCode = i;
-			//printf("\r\n ErrCode is %d",ErrCode);
-			return;
-		}
-	}
+	while(SET == spi_i2s_flag_get(SPI1,SPI_FLAG_TRANS)){}
+	Drv_Receive_Frame.data_receive_drv = spi_i2s_data_receive(SPI1);
+	
+	SET_DRV8323_NSS_HIGH
+	return Drv_Receive_Frame.data_bit_drv.DATA;
 }
 
 

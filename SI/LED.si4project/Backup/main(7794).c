@@ -53,52 +53,40 @@ void DRV8323_Init_ResultPrint(void);
 
 int main(void)
 {
-    /* configure CoreM4 systick */
+    /* configure systick */
     systick_config();
-
-	/* configure CoreM4 NVIC */
-	NVIC_Config();
 	
 	/* configure perphieal clock */
 	clock_config();
 	
-	/* configure perphieal GPIO */
+	/* configure Port */
 	Port_Config();
 
-	/* configure perphieal Usart */
+	/* configure Usart */
 	gd_eval_com_init(EVAL_COM1);
 
-	/* configure perphieal Adc */
+	/* configure Adc */
 	adc_config();
 	
-	/* configure perphieal SPI2 -- AS5740P */
+	/* configure SPI2 -- AS5740P */
 	spi2_config();
 	
-	/* configure perphieal SPI1 -- Drv8323 */
+	/* configure SPI1 -- Drv8323 */
 	spi1_config();
-
-	/* configure perphieal TIMER0 */
-	timer_config();
 	
 	delay_1ms(50);
-	/* configure Ecu_device Drv8323 */
 	DRV8323_Init_ResultPrint();
 
+	
+	timer_config();
 	MI_FOC_initialize();
-
-	/* Enable system Interrupt */
-	System_Interrup_Enable();
-
 	
     while (1)
 	{
-		drv8323rs_data[0] = Drv8323_ReadData(Fault_Status1);
-		drv8323rs_data[1] = Drv8323_ReadData(Fault_Status2);
-		printf("CURRENT FaultStatus = %d,%d\n", drv8323rs_data[0],drv8323rs_data[1]);
-//		
+		//drv8323rs_data = Drv8323_ReadData(Fault_Status1);
 //		angle_phy = (float)(AS5047_GetAngle())/ANGLE_DIGITAL*ANGLE_CYCLE;
-//		printf("CURRENT ANGLE: %f\n", angle_phy);
-		
+		//printf("\r\n CURRENT FaultStatus = %d", drv8323rs_data);
+//        printf("CURRENT ANGLE: %f\n", angle_phy);
         /*timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_0,pulse-1);
 		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_1,0);
 		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_2,0);
@@ -131,8 +119,77 @@ int main(void)
 		//printf("ThreePhase: %f,%f,%f,%f,%f,%f,%f\n",SVPWM_OutCmp.Tcmp1,SVPWM_OutCmp.Tcmp2,SVPWM_OutCmp.Tcmp3,ClarkeCur.Ialpha,ClarkeCur.Ibeta,Park_Cur.Id,Park_Cur.Iq);
 	}
 }
+/*!
+    \brief      toggle the led every 500ms
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+void led_spark(void)
+{
+    static __IO uint32_t timingdelaylocal = 0U;
 
+    if(timingdelaylocal)
+		{
 
+        if(timingdelaylocal < 500U)
+		{
+            gd_eval_led_on(LED3);
+        }
+		else
+		{
+            gd_eval_led_off(LED3);
+        }
+
+        timingdelaylocal--;
+    }
+		else
+		{
+        timingdelaylocal = 1000U;
+    }
+}
+
+void DRV8323_Init_ResultPrint(void)
+{
+	uint16_t Result;
+	Result = DRV8323_Init_Device();
+	switch(Result)
+	{
+		case 1: 
+		printf("\r\n Init Drive_Control_Reg FAIL...");
+		break;
+		case 2: 
+		printf("\r\n Init Gate_DriveHS_Reg FAIL...");
+		break;
+		case 3: 
+		printf("\r\n Init Gate_DriveLS_Reg FAIL...");
+		break;
+		case 4: 
+		printf("\r\n Init OCP_Control_Reg FAIL...");
+		break;
+		case 5: 
+		printf("\r\n Init CSA_Control_Reg FAIL...");
+		break;
+		default:
+		printf("\r\n DRV8323RS Init Success!");
+	}
+
+}
+void Report_Drv8323_FaultInfo(void)
+{
+	static uint32_t Last_FaultInfo;
+	Drv8323_FaultInfo = (((uint32_t)Drv8323_ReadData(Fault_Status1))<<11) | (((uint32_t)Drv8323_ReadData(Fault_Status2))<<0);
+	Current_FaultInfo = Drv8323_FaultInfo - Last_FaultInfo;
+	for(int i=0;i<21;i++)
+	{
+		if(Current_FaultInfo == BIT(i))
+		{
+			ErrCode = i;
+			//printf("\r\n ErrCode is %d",ErrCode);
+			return;
+		}
+	}
+}
 /* retarget the C library printf function to the USART */
 int fputc(int ch, FILE *f)
 {

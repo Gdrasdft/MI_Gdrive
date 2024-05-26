@@ -17,6 +17,9 @@ void timer_config(void)
 	
     timer_oc_parameter_struct timer_ocintpara;
     timer_parameter_struct timer_initpara;
+
+    rcu_periph_clock_enable(RCU_TIMER0);
+
     timer_deinit(TIMER0);
 
     /* TIMER0 configuration */

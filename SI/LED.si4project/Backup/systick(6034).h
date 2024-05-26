@@ -1,6 +1,6 @@
 /*!
-    \file    systick.c
-    \brief   the systick configuration file
+    \file    systick.h
+    \brief   the header file of systick
 
     \version 2017-02-10, V1.0.0, firmware for GD32F30x
     \version 2018-10-10, V1.1.0, firmware for GD32F30x
@@ -35,82 +35,16 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 OF SUCH DAMAGE.
 */
 
-#include "gd32f30x.h"
-#include "systick.h"
+#ifndef SYS_TICK_H
+#define SYS_TICK_H
 
-volatile static uint32_t delay;
+#include <stdint.h>
 
-/*!
-    \brief      configure systick
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void systick_config(void)
-{
-    /* setup systick timer for 1000Hz interrupts */
-    if (SysTick_Config(SystemCoreClock / 1000U)){
-        /* capture error */
-        while (1){
-        }
-    }
+/* configure systick */
+void systick_config(void);
+/* delay a time in milliseconds */
+void delay_1ms(uint32_t count);
+/* delay decrement */
+void delay_decrement(void);
 
-}
-
-/*!
-    \brief      configure NVIC
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void NVIC_Config(void)
-{
-	/* pre-emption priority: 0 BIT*/
-	/* subpriority: 4 BIT*/
-	nvic_priority_group_set(NVIC_PRIGROUP_PRE0_SUB4);
-	
-	/* configure the EXTI handler priority */
-    NVIC_SetPriority(EXTI10_15_IRQn, 0x01U);
-
-
-	/* configure the ADC handler priority */
-    NVIC_SetPriority(ADC0_1_IRQn, 0x02U);
-
-}
-
-void System_Interrup_Enable(void)
-{
-	/* enable ADC interrupt */
-    NVIC_EnableIRQ(ADC0_1_IRQn);
-	/* enable EXTI interrupt */
-    NVIC_EnableIRQ(EXTI10_15_IRQn);
-}
-
-
-
-/*!
-    \brief      delay a time in milliseconds
-    \param[in]  count: count in milliseconds
-    \param[out] none
-    \retval     none
-*/
-void delay_1ms(uint32_t count)
-{
-    delay = count;
-
-    while(0U != delay){
-    }
-}
-
-/*!
-    \brief      delay decrement
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void delay_decrement(void)
-{
-    if (0U != delay){
-        delay--;
-    }
-}
+#endif /* SYS_TICK_H */

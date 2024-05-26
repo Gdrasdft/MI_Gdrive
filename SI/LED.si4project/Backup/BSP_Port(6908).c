@@ -34,44 +34,8 @@ void Port_Config(void)
 	gpio_init(GPIOA, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_11);
 	/* PB12 as ENABLE */
     gpio_init(GPIOB, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_12);
-
-	/*configure PA8 PA9 PA10(TIMER0 CH0 CH1 CH2) as alternate function*/
-    gpio_init(GPIOA,GPIO_MODE_AF_PP,GPIO_OSPEED_50MHZ,GPIO_PIN_8);
-    gpio_init(GPIOA,GPIO_MODE_AF_PP,GPIO_OSPEED_50MHZ,GPIO_PIN_9);
-    gpio_init(GPIOA,GPIO_MODE_AF_PP,GPIO_OSPEED_50MHZ,GPIO_PIN_10);
-
-	/* configure Fault pin as input */
-    gpio_init(GPIOA, GPIO_MODE_IN_FLOATING, GPIO_OSPEED_50MHZ, GPIO_PIN_12);
 }
 
 
-/*!
-    \brief      toggle the led every 500ms
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void led_spark(void)
-{
-    static __IO uint32_t timingdelaylocal = 0U;
 
-    if(timingdelaylocal)
-		{
-
-        if(timingdelaylocal < 500U)
-		{
-            gd_eval_led_on(LED3);
-        }
-		else
-		{
-            gd_eval_led_off(LED3);
-        }
-
-        timingdelaylocal--;
-    }
-		else
-		{
-        timingdelaylocal = 1000U;
-    }
-}
 

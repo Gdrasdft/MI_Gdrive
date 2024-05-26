@@ -54,39 +54,9 @@ void systick_config(void)
         while (1){
         }
     }
-
+    /* configure the systick handler priority */
+    NVIC_SetPriority(SysTick_IRQn, 0x00U);
 }
-
-/*!
-    \brief      configure NVIC
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void NVIC_Config(void)
-{
-	/* pre-emption priority: 0 BIT*/
-	/* subpriority: 4 BIT*/
-	nvic_priority_group_set(NVIC_PRIGROUP_PRE0_SUB4);
-	
-	/* configure the EXTI handler priority */
-    NVIC_SetPriority(EXTI10_15_IRQn, 0x01U);
-
-
-	/* configure the ADC handler priority */
-    NVIC_SetPriority(ADC0_1_IRQn, 0x02U);
-
-}
-
-void System_Interrup_Enable(void)
-{
-	/* enable ADC interrupt */
-    NVIC_EnableIRQ(ADC0_1_IRQn);
-	/* enable EXTI interrupt */
-    NVIC_EnableIRQ(EXTI10_15_IRQn);
-}
-
-
 
 /*!
     \brief      delay a time in milliseconds

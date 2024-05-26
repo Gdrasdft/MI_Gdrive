@@ -40,7 +40,7 @@ OF SUCH DAMAGE.
 
 /* private variables */
 float angle_phy;
-uint16_t drv8323rs_data[4];
+uint16_t drv8323rs_data;
 
 static uint32_t GPIO_PORT[LEDn]                = {LED2_GPIO_PORT, LED3_GPIO_PORT,
                                                   LED4_GPIO_PORT, LED5_GPIO_PORT};

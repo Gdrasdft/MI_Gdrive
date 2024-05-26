@@ -54,9 +54,9 @@ void adc_config(void)
     /* ADC channel length config */
     adc_channel_length_config(MI_FOC_ADC, ADC_INSERTED_CHANNEL, ADC_SAMP_CH_NUM);
     /* ADC injected channel config */
-    adc_inserted_channel_config(MI_FOC_ADC, MIFOC_VOL_ADC_ORDER,  MIFOC_VOL_ADC_CH,  ADC_SAMPLETIME_7POINT5);
-    adc_inserted_channel_config(MI_FOC_ADC, MIFOC_NTC1_ADC_ORDER, MIFOC_NTC1_ADC_CH, ADC_SAMPLETIME_7POINT5);
-    adc_inserted_channel_config(MI_FOC_ADC, MIFOC_NTC2_ADC_ORDER, MIFOC_NTC2_ADC_CH, ADC_SAMPLETIME_7POINT5);
+    adc_regular_channel_config(MI_FOC_ADC, MIFOC_VOL_ADC_ORDER,  MIFOC_VOL_ADC_CH,  ADC_SAMPLETIME_1POINT5);
+    adc_regular_channel_config(MI_FOC_ADC, MIFOC_NTC1_ADC_ORDER, MIFOC_NTC1_ADC_CH, ADC_SAMPLETIME_1POINT5);
+    adc_regular_channel_config(MI_FOC_ADC, MIFOC_NTC2_ADC_ORDER, MIFOC_NTC2_ADC_CH, ADC_SAMPLETIME_1POINT5);
     //adc_inserted_channel_config(MI_FOC_ADC, 3, ADC_CHANNEL_3, ADC_SAMPLETIME_55POINT5);
     /* ADC trigger config */
     adc_external_trigger_source_config(MI_FOC_ADC, ADC_INSERTED_CHANNEL, ADC0_1_EXTTRIG_INSERTED_T0_CH3); 
@@ -75,6 +75,8 @@ void adc_config(void)
     adc_interrupt_flag_clear(MI_FOC_ADC, ADC_INT_FLAG_EOC);
     adc_interrupt_flag_clear(MI_FOC_ADC, ADC_INT_FLAG_EOIC);
 	adc_interrupt_enable(MI_FOC_ADC, ADC_INT_EOIC);
-
+    /* enable ADC interrupt */
+	//nvic_priority_group_set(NVIC_PRIGROUP_PRE1_SUB3);
+    nvic_irq_enable(ADC0_1_IRQn, 1, 0);
 }
 

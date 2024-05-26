@@ -14,9 +14,20 @@ void timer_config(void)
     the channel 1 duty cycle is set to 50% so channel 2N is set to 50%.
     the channel 2 duty cycle is set to 75% so channel 3N is set to 25%.
   ----------------------------------------------------------------------- */
+	rcu_periph_clock_enable(RCU_GPIOA);
+    rcu_periph_clock_enable(RCU_GPIOB);
+    rcu_periph_clock_enable(RCU_AF);
+
+    /*configure PA8 PA9 PA10(TIMER0 CH0 CH1 CH2) as alternate function*/
+    gpio_init(GPIOA,GPIO_MODE_AF_PP,GPIO_OSPEED_50MHZ,GPIO_PIN_8);
+    gpio_init(GPIOA,GPIO_MODE_AF_PP,GPIO_OSPEED_50MHZ,GPIO_PIN_9);
+    gpio_init(GPIOA,GPIO_MODE_AF_PP,GPIO_OSPEED_50MHZ,GPIO_PIN_10);
 	
     timer_oc_parameter_struct timer_ocintpara;
     timer_parameter_struct timer_initpara;
+
+    rcu_periph_clock_enable(RCU_TIMER0);
+
     timer_deinit(TIMER0);
 
     /* TIMER0 configuration */
