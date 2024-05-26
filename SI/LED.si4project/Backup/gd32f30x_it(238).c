@@ -166,27 +166,14 @@ void EXTI10_15_IRQHandler(void)
 void ADC0_1_IRQHandler(void)
 {
 	static uint16_t cnt;
+    /* clear the ADC flag */
+    adc_interrupt_flag_clear(ADC0, ADC_INT_FLAG_EOIC);
 	cnt++;
-    /* Judge ADC IRQ TYPE */
-	if(((ADC_STAT(MI_FOC_ADC0) & ADC_STAT_WDE)) || ((ADC_STAT(MI_FOC_ADC1) & ADC_STAT_WDE)))
+	if(cnt > 10000)
 	{
-		adc_interrupt_flag_clear(MI_FOC_ADC0, ADC_INT_FLAG_WDE);
-		adc_interrupt_flag_clear(MI_FOC_ADC1, ADC_INT_FLAG_WDE);
-	    adc_interrupt_flag_clear(ADC0, ADC_INT_FLAG_EOIC);
-		if(cnt > 5000)
-		{
-			cnt = 0;
-			gd_eval_led_toggle(LED3);
-		}
+		cnt = 0;
+		gd_eval_led_toggle(LED3);
 	}
-	else
-	{
-		adc_interrupt_flag_clear(ADC0, ADC_INT_FLAG_EOIC);
-		if(cnt > 10000)
-		{
-			cnt = 0;
-			gd_eval_led_toggle(LED3);
-		}
-	}	
+	
 }
 

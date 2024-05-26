@@ -122,6 +122,7 @@ uint16_t DRV8323_Init_Device(void)
     uint16_t   Result = 0;
 	DRV8323_nFAULT_EXTI();
 
+/*===============================Gate Drive HS===========================================*/
 	//Unlock SPI Reg Write
 	GATE_HS_DATA.reg.LOCK = 3;
 	GATE_HS_DATA.reg.IDRIVEP_HS = 15;
@@ -132,7 +133,7 @@ uint16_t DRV8323_Init_Device(void)
 		Result = 2;
 		return Result;
 	}	
-/*==========================================================================*/
+/*===============================Driver Control===========================================*/
 	DRI_CTL_DATA.reg.DIS_CPUV = 0;
 	DRI_CTL_DATA.reg.DIS_GDF  = 0;
 	DRI_CTL_DATA.reg.OTW_REP  = 1;
@@ -145,7 +146,7 @@ uint16_t DRV8323_Init_Device(void)
 		Result = 1;
 		return Result;
 	}
-/*==========================================================================*/
+/*================================Gate Drive LS==========================================*/
 	GATE_LS_DATA.reg.CBC = 1;
 	GATE_LS_DATA.reg.TDRIVE = 3;
 	GATE_LS_DATA.reg.IDRIVEP_LS = 15;
@@ -156,10 +157,10 @@ uint16_t DRV8323_Init_Device(void)
 		Result = 3;
 		return Result;
 	}
-/*==========================================================================*/
+/*=================================OCP Control=========================================*/
 	OCP_CTL_DATA.reg.TRETRY = 0;
-	OCP_CTL_DATA.reg.DEADTIME = 2;
-	OCP_CTL_DATA.reg.OCP_MODE = 1;
+	OCP_CTL_DATA.reg.DEADTIME = 1;
+	OCP_CTL_DATA.reg.OCP_MODE = 0;
 	OCP_CTL_DATA.reg.OCP_DEG = 1;
 	OCP_CTL_DATA.reg.VDS_LVL = 9;
 	Drv8323_WriteCmd(OCP_Control, OCP_CTL_DATA.cmd);
@@ -168,7 +169,7 @@ uint16_t DRV8323_Init_Device(void)
 		Result = 4;
 		return Result;
 	}
-/*==========================================================================*/
+/*=================================CSA Control=========================================*/
 	OSA_CTL_DATA.reg.CSA_FET = 0;
 	OSA_CTL_DATA.reg.LS_REF  = 0;
 	OSA_CTL_DATA.reg.VREF_DIV = 1;
@@ -184,7 +185,8 @@ uint16_t DRV8323_Init_Device(void)
 		Result = 5;
 		return Result;
 	}
-/*==========================================================================*/
+	
+/*================================Coonfigure Over=======================================*/
 
 	return Result;
 }

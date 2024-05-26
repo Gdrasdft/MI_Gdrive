@@ -12,15 +12,12 @@ void clock_config(void)
 	rcu_periph_clock_enable(RCU_SPI2);
 	/* enable SPI1 clock */
 	rcu_periph_clock_enable(RCU_SPI1);
-	/* enable ADC0,1 clock */
+	/* enable ADC0 clock */
     rcu_periph_clock_enable(RCU_ADC0);
-	rcu_periph_clock_enable(RCU_ADC1);
 	/* enable USART clock */
     rcu_periph_clock_enable(RCU_USART1);
 	/* enable TIMER0 clock */
 	rcu_periph_clock_enable(RCU_TIMER0);
-	/* enable DMA clock */
-	rcu_periph_clock_enable(RCU_DMA0);
 }
 
 

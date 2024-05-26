@@ -95,9 +95,7 @@ int main(void)
 		drv8323rs_data[0] = Drv8323_ReadData(Fault_Status1);
 		drv8323rs_data[1] = Drv8323_ReadData(Fault_Status2);
 		printf("CURRENT FaultStatus = %d,%d\n", drv8323rs_data[0],drv8323rs_data[1]);
-
-		User_SofeTrig_RegularGroupConver();
-		
+//		
 //		angle_phy = (float)(AS5047_GetAngle())/ANGLE_DIGITAL*ANGLE_CYCLE;
 //		printf("CURRENT ANGLE: %f\n", angle_phy);
 		
