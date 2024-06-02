@@ -5,7 +5,6 @@ void Port_Config(void)
 {
     /* configure led GPIO port */ 
     gpio_init(GPIOC, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ,GPIO_PIN_13);
-	gpio_init(GPIOC, GPIO_MODE_OUT_PP, GPIO_OSPEED_50MHZ,GPIO_PIN_14);
 	
 	/* connect port to USARTx_Tx */
     gpio_init(GPIOA, GPIO_MODE_AF_PP, GPIO_OSPEED_50MHZ, GPIO_PIN_2);
@@ -63,11 +62,11 @@ void led_spark(void)
 
         if(timingdelaylocal < 500U)
 		{
-            //gd_eval_led_on(LED3);
+            gd_eval_led_on(LED3);
         }
 		else
 		{
-            //gd_eval_led_off(LED3);
+            gd_eval_led_off(LED3);
         }
 
         timingdelaylocal--;

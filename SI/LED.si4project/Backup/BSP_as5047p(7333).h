@@ -66,7 +66,8 @@ typedef union DATA_FRAME
 	uint16_t data_receive;
 }Data_Frame;
 
-extern float RtrAngle;
+
+
 
 #ifdef __cplusplus
 }

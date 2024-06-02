@@ -63,10 +63,9 @@ void timer_config(void)
     timer_channel_output_mode_config(TIMER0,TIMER_CH_2,TIMER_OC_MODE_PWM0);
     timer_channel_output_shadow_config(TIMER0,TIMER_CH_2,TIMER_OC_SHADOW_ENABLE);
 
-    timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_3,1);
+    timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_3,timer_initpara.period);
     timer_channel_output_mode_config(TIMER0,TIMER_CH_3,TIMER_OC_MODE_PWM1);
     timer_channel_output_shadow_config(TIMER0,TIMER_CH_3,TIMER_OC_SHADOW_ENABLE);
-	timer_channel_output_fast_config(TIMER0,TIMER_CH_3,TIMER_OC_FAST_ENABLE);
 
     timer_primary_output_config(TIMER0,ENABLE);
 

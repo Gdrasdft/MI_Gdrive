@@ -2,8 +2,8 @@
 #include "systick.h"
 
 uint32_t Drv8323_FaultInfo;
-uint16_t drv8323rs_data[4];
-uint8_t ErrCode[ERRMAX]={0};
+uint32_t Current_FaultInfo;
+uint8_t ErrCode;
 
 static Cmd_Frame_Drv  Drv_Cmd_Frame;
 static Data_Frame_Drv Drv_Receive_Frame;
@@ -121,7 +121,7 @@ uint16_t DRV8323_Init_Device(void)
 {
     uint16_t   Result = 0;
 	DRV8323_nFAULT_EXTI();
-	DRV8323_DeviceReset();
+
 /*===============================Gate Drive HS===========================================*/
 	//Unlock SPI Reg Write
 	GATE_HS_DATA.reg.LOCK = 3;
@@ -130,7 +130,8 @@ uint16_t DRV8323_Init_Device(void)
 	Drv8323_WriteCmd(Gate_Drive_HS, GATE_HS_DATA.cmd);
 	if(GATE_HS_DATA.cmd != Drv8323_ReadData(Gate_Drive_HS))
 	{
-		Result |= BIT(Gate_Drive_HS);
+		Result = 2;
+		return Result;
 	}	
 /*===============================Driver Control===========================================*/
 	DRI_CTL_DATA.reg.DIS_CPUV = 0;
@@ -142,7 +143,8 @@ uint16_t DRV8323_Init_Device(void)
 	Drv8323_WriteCmd(Driver_Control, DRI_CTL_DATA.cmd);
 	if(DRI_CTL_DATA.cmd != Drv8323_ReadData(Driver_Control))
 	{
-		Result |= BIT(Driver_Control);
+		Result = 1;
+		return Result;
 	}
 /*================================Gate Drive LS==========================================*/
 	GATE_LS_DATA.reg.CBC = 1;
@@ -152,7 +154,8 @@ uint16_t DRV8323_Init_Device(void)
 	Drv8323_WriteCmd(Gate_Drive_LS, GATE_LS_DATA.cmd);
 	if(GATE_LS_DATA.cmd != Drv8323_ReadData(Gate_Drive_LS))
 	{
-		Result |= BIT(Gate_Drive_LS);
+		Result = 3;
+		return Result;
 	}
 /*=================================OCP Control=========================================*/
 	OCP_CTL_DATA.reg.TRETRY = 0;
@@ -163,7 +166,8 @@ uint16_t DRV8323_Init_Device(void)
 	Drv8323_WriteCmd(OCP_Control, OCP_CTL_DATA.cmd);
 	if(OCP_CTL_DATA.cmd != Drv8323_ReadData(OCP_Control))
 	{
-		Result |= BIT(OCP_Control);
+		Result = 4;
+		return Result;
 	}
 /*=================================CSA Control=========================================*/
 	OSA_CTL_DATA.reg.CSA_FET = 0;
@@ -178,7 +182,8 @@ uint16_t DRV8323_Init_Device(void)
 	Drv8323_WriteCmd(CSA_Control, OSA_CTL_DATA.cmd);
 	if(OSA_CTL_DATA.cmd != Drv8323_ReadData(CSA_Control))
 	{
-		Result |= BIT(CSA_Control);
+		Result = 5;
+		return Result;
 	}
 	
 /*================================Coonfigure Over=======================================*/
@@ -205,56 +210,44 @@ void DRV8323_DeviceReset(void)
 
 void DRV8323_Init_ResultPrint(void)
 {
-	uint16_t Result = DRV8323_Init_Device();
-	if( 0 == Result)
+	uint16_t Result = 0;
+	Result = DRV8323_Init_Device();
+	switch(Result)
 	{
+		case 1: 
+		printf("\r\n Init Drive_Control_Reg FAIL...");
+		break;
+		case 2: 
+		printf("\r\n Init Gate_DriveHS_Reg FAIL...");
+		break;
+		case 3: 
+		printf("\r\n Init Gate_DriveLS_Reg FAIL...");
+		break;
+		case 4: 
+		printf("\r\n Init OCP_Control_Reg FAIL...");
+		break;
+		case 5: 
+		printf("\r\n Init CSA_Control_Reg FAIL...");
+		break;
+		default:
 		printf("\r\n DRV8323RS Init Success!");
-	}
-	else
-	{
-		if(Result&BIT(Driver_Control))
-		{
-			printf("\r\n Init Drive_Control_Reg FAIL...");
-		}
-		if(Result&BIT(Gate_Drive_HS))
-		{
-			printf("\r\n Init Gate_DriveHS_Reg FAIL...");
-		}
-		if(Result&BIT(Gate_Drive_LS))
-		{
-			printf("\r\n Init Gate_DriveLS_Reg FAIL...");
-		}
-		if(Result&BIT(OCP_Control))
-		{
-			printf("\r\n Init OCP_Control_Reg FAIL...");
-		}	
-		if(Result&BIT(CSA_Control))
-		{
-			printf("\r\n Init CSA_Control_Reg FAIL...");
-		}
-		else
-		{
-			printf("\r\n DRV8323RS Init Success!");
-		}
 	}
 
 }
 
 void Report_Drv8323_FaultInfo(void)
-{	
-	uint16_t ErrCnt = 0;
+{
+	static uint32_t Last_FaultInfo;
 	Drv8323_FaultInfo = (((uint32_t)Drv8323_ReadData(Fault_Status1))<<11) | (((uint32_t)Drv8323_ReadData(Fault_Status2))<<0);
-	for(int i=0;i<GEN_FAULT;i++)
+	Current_FaultInfo = Drv8323_FaultInfo - Last_FaultInfo;
+	for(int i=0;i<21;i++)
 	{
-		if(Drv8323_FaultInfo & BIT(i))
+		if(Current_FaultInfo == BIT(i))
 		{
-			ErrCode[ErrCnt] = i;
-			ErrCnt++;
+			ErrCode = i;
+			//printf("\r\n ErrCode is %d",ErrCode);
+			return;
 		}
-	}
-	for(int i=0; i<ErrCnt;i++)
-	{
-		printf("\r\n ErrCode is %d\n",ErrCode[i]);
 	}
 }
 

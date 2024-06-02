@@ -77,7 +77,7 @@ int main(void)
 	/* configure perphieal TIMER0 */
 	timer_config();
 	
-	delay_1ms(100);
+	delay_1ms(50);
 	/* configure Ecu_device Drv8323 */
 	DRV8323_Init_ResultPrint();
 
@@ -89,9 +89,13 @@ int main(void)
 	
     while (1)
 	{
-//		printf("CURRENT FaultStatus = %d,%d\n", drv8323rs_data[0],drv8323rs_data[1]);
+		drv8323rs_data[0] = Drv8323_ReadData(Fault_Status1);
+		drv8323rs_data[1] = Drv8323_ReadData(Fault_Status2);
+		printf("CURRENT FaultStatus = %d,%d\n", drv8323rs_data[0],drv8323rs_data[1]);
 
 		User_SofeTrig_RegularGroupConver();
+		
+//		angle_phy = (float)(AS5047_GetAngle())/ANGLE_DIGITAL*ANGLE_CYCLE;
 //		printf("CURRENT ANGLE: %f\n", angle_phy);
 		
         /*timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_0,pulse-1);

@@ -42,6 +42,7 @@ void adc_dma_init(void)
 */
 void adc_config(void)
 {
+	uint32_t WDCHSEL = 0;
     /* config ADC clock */
     rcu_adc_clock_config(RCU_CKADC_CKAPB2_DIV4);
 

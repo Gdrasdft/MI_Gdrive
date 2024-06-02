@@ -42,6 +42,9 @@ OF SUCH DAMAGE.
 
 /* configure systick */
 void systick_config(void);
+void delay_1ms(uint32_t Timecnt_ms);
+void delay_1us(uint32_t Timecnt_us);
+
 
 /* configure NVIC */
 void NVIC_Config(void);
@@ -49,10 +52,5 @@ void NVIC_Config(void);
 /*ENABLE SYSTEM INTERRUPT FOR MOTOR CONTROL*/
 void System_Interrup_Enable(void);
 
-
-/* delay a time in milliseconds */
-void delay_1ms(uint32_t count);
-/* delay decrement */
-void delay_decrement(void);
 
 #endif /* SYS_TICK_H */

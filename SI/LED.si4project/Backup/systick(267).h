@@ -1,6 +1,6 @@
 /*!
-    \file    gd32f307c_eval.h
-    \brief   definitions for GD32F307C_EVAL's leds, keys and COM ports hardware resources
+    \file    systick.h
+    \brief   the header file of systick
 
     \version 2017-02-10, V1.0.0, firmware for GD32F30x
     \version 2018-10-10, V1.1.0, firmware for GD32F30x
@@ -35,40 +35,24 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 OF SUCH DAMAGE.
 */
 
-#ifndef GD32F307C_EVAL_H
-#define GD32F307C_EVAL_H
+#ifndef SYS_TICK_H
+#define SYS_TICK_H
 
-#ifdef __cplusplus
- extern "C" {
-#endif
+#include <stdint.h>
 
-#include "gd32f30x.h"
-#include "systick.h"
+/* configure systick */
+void systick_config(void);
 
-/* COM_Usart */
-#define COMn                             2U
+/* configure NVIC */
+void NVIC_Config(void);
 
-#define EVAL_COM0                        USART0
-#define EVAL_COM0_CLK                    RCU_USART0
-#define EVAL_COM0_TX_PIN                 GPIO_PIN_9
-#define EVAL_COM0_RX_PIN                 GPIO_PIN_10
-#define EVAL_COM0_GPIO_PORT              GPIOA
-#define EVAL_COM0_GPIO_CLK               RCU_GPIOA
-
-#define EVAL_COM1                        USART1
-#define EVAL_COM1_CLK                    RCU_USART1
-#define EVAL_COM1_TX_PIN                 GPIO_PIN_2
-#define EVAL_COM1_RX_PIN                 GPIO_PIN_3
-#define EVAL_COM1_GPIO_PORT              GPIOA
-#define EVAL_COM1_GPIO_CLK               RCU_GPIOA
+/*ENABLE SYSTEM INTERRUPT FOR MOTOR CONTROL*/
+void System_Interrup_Enable(void);
 
 
-/* configure COM port */
-void gd_eval_com_init(uint32_t com);
+/* delay a time in milliseconds */
+void delay_1ms(uint32_t count);
+/* delay decrement */
+void delay_decrement(void);
 
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* GD32F307C_EVAL_H */
+#endif /* SYS_TICK_H */

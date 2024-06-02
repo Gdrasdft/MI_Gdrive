@@ -163,33 +163,28 @@ void EXTI10_15_IRQHandler(void)
     \param[out] none
     \retval     none
 */
+uint32_t DeltaCnt1 = 0;
+uint32_t DeltaCnt2 = 0;
 void TIMER0_UP_IRQHandler(void)
 {
 	if(RESET != timer_flag_get(TIMER0,TIMER_INTF_UPIF))
 	{
 		TimerCouner_Dir = TIMER_CTL0(TIMER0)&TIMER_CTL0_DIR;
 		timer_interrupt_flag_clear(TIMER0,TIMER_INTF_UPIF);
-		//向上计数
 		if(CNT_DIR_UP == TimerCouner_Dir)
 		{
 			UpCountNum++;
-			GPIO_BOP(GPIOC) = GPIO_PIN_14;
-			TIMER_INTF(TIMER0) = (~(uint32_t)TIMER_INTF_CH3IF);
-			TIMER_CH3CV(TIMER0) = timer_initpara.period-50;
-			TIMER_CHCTL1(TIMER0) &= (~(uint32_t)TIMER_CHCTL1_CH3COMCTL);
-        	TIMER_CHCTL1(TIMER0) |= (uint32_t)((uint32_t)(TIMER_OC_MODE_PWM0) << 8U);
+//			timer_interrupt_flag_clear(TIMER0,TIMER_INTF_CH3IF);
+//			TIMER_CH3CV(TIMER0) = timer_initpara.period-ADC_SAMPLE_DELAY_CNT;
 		}
-		//向下计数
 		else
 		{
 			DowmCountNum++;
-			GPIO_BC(GPIOC) = GPIO_PIN_14;
-			TIMER_INTF(TIMER0) = (~(uint32_t)TIMER_INTF_CH3IF);
-			TIMER_CH3CV(TIMER0) = timer_initpara.period-50;
-			TIMER_CHCTL1(TIMER0) &= (~(uint32_t)TIMER_CHCTL1_CH3COMCTL);
-        	TIMER_CHCTL1(TIMER0) |= (uint32_t)((uint32_t)(TIMER_OC_MODE_PWM1) << 8U);
+//			timer_interrupt_flag_clear(TIMER0,TIMER_INTF_CH3IF);
+//			TIMER_CH3CV(TIMER0) = ADC_SAMPLE_DELAY_CNT;
 		}
-		RtrAngle = (float)(AS5047_GetAngle())/ANGLE_DIGITAL*ANGLE_CYCLE;
+		DeltaCnt1 = UpCountNum - DowmCountNum;
+		DeltaCnt2 = DowmCountNum - UpCountNum;
 	}
 }
 
@@ -201,8 +196,7 @@ void TIMER0_UP_IRQHandler(void)
 */
 void ADC0_1_IRQHandler(void)
 {
-	static uint16_t cnt = 0;
-	GPIO_BOP(GPIOC) = GPIO_PIN_13;
+	static uint16_t cnt;
 	cnt++;
     /* Judge ADC IRQ TYPE */
 	if(((ADC_STAT(MI_FOC_ADC0) & ADC_STAT_WDE)) || ((ADC_STAT(MI_FOC_ADC1) & ADC_STAT_WDE)))
@@ -214,7 +208,7 @@ void ADC0_1_IRQHandler(void)
 		if(cnt > 5000)
 		{
 			cnt = 0;
-//			gd_eval_led_toggle(LED3);
+			gd_eval_led_toggle(LED3);
 		}
 	}
 	else
@@ -224,10 +218,9 @@ void ADC0_1_IRQHandler(void)
 		if(cnt > 10000)
 		{
 			cnt = 0;
-//			gd_eval_led_toggle(LED3);
+			gd_eval_led_toggle(LED3);
 		}
-	}
-	GPIO_BC(GPIOC) = GPIO_PIN_13;
+	}	
 }
 
 

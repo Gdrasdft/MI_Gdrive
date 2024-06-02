@@ -34,20 +34,20 @@
 #define MIFOC_SOC_ADC_PIN                GPIO_PIN_0
 #define MIFOC_SOC_ADC_GPIO_PORT          GPIOC
 
-#define MIFOC_SOA_ADC_CH                 ADC_CHANNEL_14
+#define MIFOC_SOA_ADC_CH                 ADC_CHANNEL_12
 #define MIFOC_SOA_ADC_ORDER              1
-#define MIFOC_SOA_ADC_PIN                GPIO_PIN_4
-#define MIFOC_SOA_ADC_GPIO_PORT          GPIOC
+#define MIFOC_SOA_ADC_PIN                GPIO_PIN_2
+#define MIFOC_SOC_ADC_GPIO_PORT          GPIOC
 
 
 
 
-#define MIFOC_NTC1_ADC_CH                ADC_CHANNEL_12
+#define MIFOC_NTC1_ADC_CH                ADC_CHANNEL_10
 #define MIFOC_NTC1_ADC_ORDER             0
 #define MIFOC_NTC1_ADC_PIN               GPIO_PIN_2
 #define MIFOC_NTC1_ADC_GPIO_PORT         GPIOC
 
-#define MIFOC_NTC2_ADC_CH                ADC_CHANNEL_9
+#define MIFOC_NTC2_ADC_CH                ADC_CHANNEL_8
 #define MIFOC_NTC2_ADC_ORDER             1
 #define MIFOC_NTC2_ADC_PIN               GPIO_PIN_0
 #define MIFOC_NTC2_ADC_GPIO_PORT         GPIOB
@@ -56,7 +56,6 @@
 #define WDG_HIGH_THRESHOLD               3500
 #define WDG_LOW_THRESHOLD                100
 
-extern uint16_t adc_value[4];
 
 void adc_config(void);
 void User_SofeTrig_RegularGroupConver(void);

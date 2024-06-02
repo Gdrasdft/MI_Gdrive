@@ -1,6 +1,6 @@
 /*!
-    \file    gd32f307c_eval.h
-    \brief   definitions for GD32F307C_EVAL's leds, keys and COM ports hardware resources
+    \file    systick.c
+    \brief   the systick configuration file
 
     \version 2017-02-10, V1.0.0, firmware for GD32F30x
     \version 2018-10-10, V1.1.0, firmware for GD32F30x
@@ -35,40 +35,81 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 OF SUCH DAMAGE.
 */
 
-#ifndef GD32F307C_EVAL_H
-#define GD32F307C_EVAL_H
-
-#ifdef __cplusplus
- extern "C" {
-#endif
-
 #include "gd32f30x.h"
 #include "systick.h"
 
-/* COM_Usart */
-#define COMn                             2U
+/*!
+    \brief      configure systick
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+void systick_config(void)
+{
+    /* setup systick timer for 1000Hz interrupts */
+    if (SysTick_Config(SystemCoreClock / 1000U)){
+        /* capture error */
+        while (1){
+        }
+    }
 
-#define EVAL_COM0                        USART0
-#define EVAL_COM0_CLK                    RCU_USART0
-#define EVAL_COM0_TX_PIN                 GPIO_PIN_9
-#define EVAL_COM0_RX_PIN                 GPIO_PIN_10
-#define EVAL_COM0_GPIO_PORT              GPIOA
-#define EVAL_COM0_GPIO_CLK               RCU_GPIOA
-
-#define EVAL_COM1                        USART1
-#define EVAL_COM1_CLK                    RCU_USART1
-#define EVAL_COM1_TX_PIN                 GPIO_PIN_2
-#define EVAL_COM1_RX_PIN                 GPIO_PIN_3
-#define EVAL_COM1_GPIO_PORT              GPIOA
-#define EVAL_COM1_GPIO_CLK               RCU_GPIOA
-
-
-/* configure COM port */
-void gd_eval_com_init(uint32_t com);
-
-
-#ifdef __cplusplus
 }
-#endif
 
-#endif /* GD32F307C_EVAL_H */
+/*!
+    \brief      delay_1ms
+    \param[in]  timecnt_ms
+    \param[out] none
+    \retval     none
+*/
+
+void delay_1ms(uint32_t Timecnt_ms)
+{
+	uint32_t delay = SysTick->VAL;
+	while((SysTick->VAL - delay) <= (Timecnt_ms*(SystemCoreClock / 1000U))){}
+}
+
+/*!
+    \brief      delay_1us
+    \param[in]  timecnt_us
+    \param[out] none
+    \retval     none
+*/
+
+void delay_1us(uint32_t Timecnt_us)
+{
+	uint32_t delay = SysTick->VAL;
+	while((SysTick->VAL - delay) <= (Timecnt_us*(SystemCoreClock / 1000000U))){}
+}
+
+
+
+/*!
+    \brief      configure NVIC
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+void NVIC_Config(void)
+{
+	/* pre-emption priority: 0 BIT*/
+	/* subpriority: 4 BIT*/
+	nvic_priority_group_set(NVIC_PRIGROUP_PRE0_SUB4);
+	
+	/* configure the EXTI handler priority */
+    NVIC_SetPriority(EXTI10_15_IRQn, 0x01U);
+
+
+	/* configure the ADC handler priority */
+    NVIC_SetPriority(ADC0_1_IRQn, 0x02U);
+
+}
+
+void System_Interrup_Enable(void)
+{
+	/* enable ADC interrupt */
+    NVIC_EnableIRQ(ADC0_1_IRQn);
+	/* enable EXTI interrupt */
+    NVIC_EnableIRQ(EXTI10_15_IRQn);
+}
+
+

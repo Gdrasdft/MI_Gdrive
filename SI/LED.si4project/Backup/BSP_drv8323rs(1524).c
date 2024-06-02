@@ -2,7 +2,6 @@
 #include "systick.h"
 
 uint32_t Drv8323_FaultInfo;
-uint16_t drv8323rs_data[4];
 uint8_t ErrCode[ERRMAX]={0};
 
 static Cmd_Frame_Drv  Drv_Cmd_Frame;

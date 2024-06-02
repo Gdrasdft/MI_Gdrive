@@ -6,7 +6,6 @@
 #endif
 
 #include "gd32f30x.h"
-#include <stdio.h>
 
 //PIN Config
 #define GPIO_PORT_ENABLE      GPIOA
@@ -43,32 +42,29 @@
 #define SET_DRV8323_NSS_LOW   gpio_bit_reset(GPIOB,GPIO_PIN_12);
 
 //故障标志位
-enum DRV_ERRCODE
-{
-	VGS_LC = 0, 	                       //C相下桥MOS驱动故障
-	VGS_HC = 1,					   	           //C相上桥MOS驱动故障
-	VGS_LB = 2,					   	           //B相下桥MOS驱动故障
-	VGS_HB = 3,					   	           //B相上桥MOS驱动故障
-	VGS_LA = 4,					   	           //A相下桥MOS驱动故障
-	VGS_HA = 5,					   	           //A相上桥MOS驱动故障
-	CPUV   = 6,					  	           //电荷泵输出欠压
-	OTW    = 7,					   	           //过温预警
-	SC_OC  = 8,					   	           //A相输出过流
-	SB_OC  = 9,					   	           //A相输出过流
-	SA_OC  = 10,					  	           //A相输出过流
-	VDS_LC = 11,					               //C相下桥臂VDS过流
-	VDS_HC = 12,					               //C相上桥臂VDS过流
-	VDS_LB = 13,					               //B相下桥臂VDS过流
-	VDS_HB = 14,					               //B相上桥臂VDS过流
-	VDS_LA = 15,					               //A相下桥臂VDS过流
-	VDS_HA = 16,				                   //A相上桥臂VDS过流
-	OTSD   = 17,					               //过温关断故障
-	UVLO   = 18,					               //驱动欠压故障
-	GDF    = 19,					               //栅极驱动故障
-	VDS_OCP= 20, 				               //VDS过流故障
-	GEN_FAULT = 21,				               //故障总标志位
-	ERRMAX
-};
+#define OFFSET                    11
+#define GEN_FAULT                 10+OFFSET//故障总标志位
+#define VDS_OCP                   9+OFFSET //VDS过流故障
+#define GDF                       8+OFFSET //栅极驱动故障
+#define UVLO                      7+OFFSET //驱动欠压故障
+#define OTSD                      6+OFFSET //过温关断故障
+#define VDS_HA                    5+OFFSET //A相上桥臂VDS过流
+#define VDS_LA                    4+OFFSET //A相下桥臂VDS过流
+#define VDS_HB                    3+OFFSET //B相上桥臂VDS过流
+#define VDS_LB                    2+OFFSET //B相下桥臂VDS过流
+#define VDS_HC                    1+OFFSET //C相上桥臂VDS过流
+#define VDS_LC                    0+OFFSET //C相下桥臂VDS过流
+#define SA_OC                     10       //A相输出过流
+#define SB_OC                     9        //A相输出过流
+#define SC_OC                     8        //A相输出过流
+#define OTW                       7        //过温预警
+#define CPUV                      6        //电荷泵输出欠压
+#define VGS_HA                    5        //A相上桥MOS驱动故障
+#define VGS_LA                    4        //A相下桥MOS驱动故障
+#define VGS_HB                    3        //B相上桥MOS驱动故障
+#define VGS_LB                    2        //B相下桥MOS驱动故障
+#define VGS_HC                    1        //C相上桥MOS驱动故障
+#define VGS_LC                    0        //C相下桥MOS驱动故障
 
 // 寄存器地址
 #define Fault_Status1     0x00
@@ -210,8 +206,8 @@ uint16_t  Drv8323_ReadData(uint8_t address);
 uint16_t Drv8323_WriteCmd(uint8_t address,uint16_t cmd);
 
 extern uint32_t Drv8323_FaultInfo;
-extern uint16_t drv8323rs_data[4];
-extern uint8_t ErrCode[ERRMAX];
+extern uint32_t Current_FaultInfo;
+extern uint8_t ErrCode;
 extern Dri_Ctl DRI_CTL_DATA;
 extern Gate_HS GATE_HS_DATA;
 extern Gate_LS GATE_LS_DATA;

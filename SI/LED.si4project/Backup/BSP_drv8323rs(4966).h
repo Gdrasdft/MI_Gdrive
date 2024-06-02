@@ -210,7 +210,7 @@ uint16_t  Drv8323_ReadData(uint8_t address);
 uint16_t Drv8323_WriteCmd(uint8_t address,uint16_t cmd);
 
 extern uint32_t Drv8323_FaultInfo;
-extern uint16_t drv8323rs_data[4];
+extern uint32_t Current_FaultInfo;
 extern uint8_t ErrCode[ERRMAX];
 extern Dri_Ctl DRI_CTL_DATA;
 extern Gate_HS GATE_HS_DATA;

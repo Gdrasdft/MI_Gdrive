@@ -1,8 +1,6 @@
 #include "BSP_as5047p.h"
 #include "systick.h"
 
-float RtrAngle;
-
 Cmd_Frame AS5047_CMD;
 Data_Frame AS5047_DATA;
 

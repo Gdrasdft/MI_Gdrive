@@ -38,8 +38,6 @@ OF SUCH DAMAGE.
 #include "gd32f30x.h"
 #include "systick.h"
 
-volatile static uint32_t delay;
-
 /*!
     \brief      configure systick
     \param[in]  none
@@ -58,6 +56,34 @@ void systick_config(void)
 }
 
 /*!
+    \brief      delay_1ms
+    \param[in]  timecnt_ms
+    \param[out] none
+    \retval     none
+*/
+
+void delay_1ms(uint32_t Timecnt_ms)
+{
+	uint32_t delay = SysTick->VAL;
+	while((SysTick->VAL - delay) <= (Timecnt_ms*(SystemCoreClock / 1000U))){}
+}
+
+/*!
+    \brief      delay_1us
+    \param[in]  timecnt_us
+    \param[out] none
+    \retval     none
+*/
+
+void delay_1us(uint32_t Timecnt_us)
+{
+	uint32_t delay = SysTick->VAL;
+	while((SysTick->VAL - delay) <= (Timecnt_us*(SystemCoreClock / 1000000U))){}
+}
+
+
+
+/*!
     \brief      configure NVIC
     \param[in]  none
     \param[out] none
@@ -70,47 +96,28 @@ void NVIC_Config(void)
 	nvic_priority_group_set(NVIC_PRIGROUP_PRE0_SUB4);
 	
 	/* configure the EXTI handler priority */
-    NVIC_SetPriority(EXTI10_15_IRQn, 0x01U);
+    NVIC_SetPriority(EXTI10_15_IRQn, 0x00U);
 
 
 	/* configure the ADC handler priority */
-    NVIC_SetPriority(ADC0_1_IRQn, 0x02U);
+    NVIC_SetPriority(ADC0_1_IRQn, 0x01U);
+
+	/* configure the TIMER0 Update handler priority */
+    NVIC_SetPriority(TIMER0_UP_IRQn, 0x01U);
 
 }
 
 void System_Interrup_Enable(void)
 {
-	/* enable ADC interrupt */
-    NVIC_EnableIRQ(ADC0_1_IRQn);
 	/* enable EXTI interrupt */
     NVIC_EnableIRQ(EXTI10_15_IRQn);
+
+	/* enable ADC interrupt */
+    NVIC_EnableIRQ(ADC0_1_IRQn);
+
+	/* enable TIMER0 Update interrupt */
+    NVIC_EnableIRQ(TIMER0_UP_IRQn);
+
 }
 
 
-
-/*!
-    \brief      delay a time in milliseconds
-    \param[in]  count: count in milliseconds
-    \param[out] none
-    \retval     none
-*/
-void delay_1ms(uint32_t count)
-{
-    delay = count;
-
-    while(0U != delay){
-    }
-}
-
-/*!
-    \brief      delay decrement
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void delay_decrement(void)
-{
-    if (0U != delay){
-        delay--;
-    }
-}

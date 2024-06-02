@@ -56,7 +56,6 @@
 #define WDG_HIGH_THRESHOLD               3500
 #define WDG_LOW_THRESHOLD                100
 
-extern uint16_t adc_value[4];
 
 void adc_config(void);
 void User_SofeTrig_RegularGroupConver(void);
