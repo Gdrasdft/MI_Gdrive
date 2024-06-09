@@ -20,7 +20,7 @@
 #include "mw_cmsis.h"
 
 /* Exported block parameters */
-uint16_T Time_Base = 5999U;           /* Variable: Time_Base
+uint16_T Time_Base = 10000U;           /* Variable: Time_Base
                                         * Referenced by: '<S1>/SVPWM'
                                         */
 
@@ -279,8 +279,8 @@ void MI_FOC_initialize(void)
 {
   /* SystemInitialize for Atomic SubSystem: '<Root>/MI_FOC' */
   /* Start for Constant: '<S1>/Constant' */
-  Ud_Set = 0;
-  Uq_Set = 3;
+  FOC_Input_VolCur.Udc = 24.0F;
+
   /* End of SystemInitialize for SubSystem: '<Root>/MI_FOC' */
 }
 

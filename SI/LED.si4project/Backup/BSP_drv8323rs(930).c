@@ -1,14 +1,5 @@
 #include "BSP_drv8323rs.h"
 #include "systick.h"
-#include "main.h"
-#if PRINT_MOTHD == USE_C_STANDARD
-#include <stdio.h>
-#endif
-#if PRINT_MOTHD == USE_USART_FUNC
-#include "gd32f307c_eval.h"
-#include <string.h>
-#endif
-
 
 uint32_t Drv8323_FaultInfo;
 uint16_t drv8323rs_data[4];
@@ -212,101 +203,39 @@ void DRV8323_DeviceReset(void)
 	ENABLE_DRV8323;
 }
 
-void DRV8323_Init_SYSTEM(void)
+void DRV8323_Init_ResultPrint(void)
 {
 	uint16_t Result = DRV8323_Init_Device();
-	uint16_t SysErr = 0;
 	if( 0 == Result)
 	{
-		SysErr = 0;
+		printf("\r\n DRV8323RS Init Success!");
 	}
 	else
 	{
 		if(Result&BIT(Driver_Control))
 		{
-			/*Try Aagain*/
-			Drv8323_WriteCmd(Driver_Control, DRI_CTL_DATA.cmd);
-			/*Try Again Fail*/
-			if(DRI_CTL_DATA.cmd != Drv8323_ReadData(Driver_Control))
-			{
-				SysErr |= BIT(Driver_Control);
-			}
-			else{}
+			printf("\r\n Init Drive_Control_Reg FAIL...");
 		}
 		if(Result&BIT(Gate_Drive_HS))
 		{
-			/*Try Aagain*/
-			Drv8323_WriteCmd(Gate_Drive_HS, GATE_HS_DATA.cmd);
-			/*Try Again Fail*/
-			if(GATE_HS_DATA.cmd != Drv8323_ReadData(Gate_Drive_HS))
-			{
-				SysErr |= BIT(Gate_Drive_HS);
-			}
-			else{}
+			printf("\r\n Init Gate_DriveHS_Reg FAIL...");
 		}
 		if(Result&BIT(Gate_Drive_LS))
 		{
-			/*Try Aagain*/
-			Drv8323_WriteCmd(Gate_Drive_LS, GATE_LS_DATA.cmd);
-			/*Try Again Fail*/
-			if(GATE_LS_DATA.cmd != Drv8323_ReadData(Gate_Drive_LS))
-			{
-				SysErr |= BIT(Gate_Drive_LS);
-			}
-			else{}		
+			printf("\r\n Init Gate_DriveLS_Reg FAIL...");
 		}
 		if(Result&BIT(OCP_Control))
 		{
-			/*Try Aagain*/
-			Drv8323_WriteCmd(OCP_Control, OCP_CTL_DATA.cmd);
-			/*Try Again Fail*/
-			if(OCP_CTL_DATA.cmd != Drv8323_ReadData(OCP_Control))
-			{
-				SysErr |= BIT(OCP_Control);
-			}
-			else{}
+			printf("\r\n Init OCP_Control_Reg FAIL...");
 		}	
 		if(Result&BIT(CSA_Control))
 		{
-			/*Try Aagain*/
-			Drv8323_WriteCmd(CSA_Control, OSA_CTL_DATA.cmd);
-			/*Try Again Fail*/
-			if(OSA_CTL_DATA.cmd != Drv8323_ReadData(CSA_Control))
-			{
-				SysErr |= BIT(CSA_Control);
-			}
-			else{}	
+			printf("\r\n Init CSA_Control_Reg FAIL...");
 		}
 		else
 		{
-			SysErr = 0xFFFF;
+			printf("\r\n DRV8323RS Init Success!");
 		}
-	}
-/*--------------------------------------- UpLoad Init Result --------------------------------------------------*/
-	if(SysErr == 0)
-	{
-#if PRINT_MOTHD == USE_C_STANDARD
-		printf("DRV8323 INIT SUCCESS!\n");
-#endif
-#if PRINT_MOTHD == USE_USART_FUNC
-//		length = GetStringLength(value);
-//		memcpy(PrintString, value, length);
-//		PrintString[length+1] = '\0';
-		UsartSendStr(USART1,"DRV8323 INIT SUCCESS!\n");
-#endif
-	}
-	
-	else
-	{
-#if PRINT_MOTHD == USE_C_STANDARD
-		printf("CURRENT ERR: %d\n",SysErr);
-#endif
-#if PRINT_MOTHD == USE_USART_FUNC
-		UsartSendStr(USART1,"CURRENT ERR:");
-		UsartSendUint16(USART1,SysErr);
-		UsartSendStr(USART1,"\n");
-#endif
-
 	}
 
 }
@@ -325,15 +254,7 @@ void Report_Drv8323_FaultInfo(void)
 	}
 	for(int i=0; i<ErrCnt;i++)
 	{
-#if PRINT_MOTHD == USE_C_STANDARD
-		printf("ErrCode is %d\n",ErrCode[i]);
-#endif
-#if PRINT_MOTHD == USE_USART_FUNC
-		UsartSendStr(USART1,"ErrCode is:");
-		UsartSendByte(USART1,ErrCode[i]);
-		UsartSendStr(USART1,"\n");
-#endif
-		
+		printf("\r\n ErrCode is %d\n",ErrCode[i]);
 	}
 }
 

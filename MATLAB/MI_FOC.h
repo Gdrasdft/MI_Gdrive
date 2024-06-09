@@ -3,9 +3,9 @@
  *
  * Code generated for Simulink model 'MI_FOC'.
  *
- * Model version                  : 1.235
+ * Model version                  : 1.240
  * Simulink Coder version         : 9.7 (R2022a) 13-Nov-2021
- * C/C++ source code generated on : Fri Oct  6 18:37:36 2023
+ * C/C++ source code generated on : Mon Jun  3 20:20:08 2024
  *
  * Target selection: ert.tlc
  * Embedded hardware selection: ARM Compatible->ARM Cortex-M
@@ -35,27 +35,18 @@
 
 #define MI_FOC_M                       (rtM)
 
-/* Exported data define */
-
-/* Definition for custom storage class: Define */
-//#define PI                             3.14159274F               /* Referenced by: '<S7>/Angle_Generate' */
-#define Time_Base                      10000U                    /* Referenced by:
-                                                                  * '<S1>/SVPWM'
-                                                                  * '<S7>/Angle_Generate'
-                                                                  */
-
 /* Forward declaration for rtModel */
 typedef struct tag_RTM RT_MODEL;
 
-/* Block signals and states (default storage) for system '<S1>/ThreePhase' */
+/* External inputs (root inport signals with default storage) */
 typedef struct {
-  real32_T Angle;                      /* '<S7>/Angle_Generate' */
-} DW_ThreePhaseCurGen;
-
-/* Block signals and states (default storage) for system '<Root>' */
-typedef struct {
-  DW_ThreePhaseCurGen ThreePhase;      /* '<S1>/ThreePhase' */
-} DW;
+  real32_T Ia;                         /* '<Root>/Ia' */
+  real32_T Ib;                         /* '<Root>/Ib' */
+  real32_T Ic;                         /* '<Root>/Ic' */
+  real32_T Theta;                      /* '<Root>/Theta' */
+  real32_T Iq_set;                     /* '<Root>/Iq_set' */
+  real32_T Id_set;                     /* '<Root>/Id_set' */
+} ExtU;
 
 /* Type definition for custom storage class: Struct */
 typedef struct AntiPark_Vol_tag {
@@ -69,9 +60,6 @@ typedef struct ClarkeCur_tag {
 } ClarkeCur_type;
 
 typedef struct FOC_Input_VolCur_tag {
-  real32_T Ia;                         /* '<S1>/ThreePhase' */
-  real32_T Ib;                         /* '<S1>/ThreePhase' */
-  real32_T Ic;                         /* '<S1>/ThreePhase' */
   real32_T Udc;                        /* '<S1>/Constant' */
 } FOC_Input_VolCur_type;
 
@@ -81,7 +69,6 @@ typedef struct Park_Cur_tag {
 } Park_Cur_type;
 
 typedef struct Rotor_Pos_tag {
-  real32_T Theta;                      /* '<S1>/ThreePhase' */
   real32_T SinTheta;                   /* '<S1>/Sin' */
   real32_T CosTheta;                   /* '<S1>/Cos' */
 } Rotor_Pos_type;
@@ -98,8 +85,31 @@ struct tag_RTM {
   const char_T * volatile errorStatus;
 };
 
-/* Block signals and states (default storage) */
-extern DW rtDW;
+/* External inputs (root inport signals with default storage) */
+extern ExtU rtU;
+
+/*
+ * Exported Global Parameters
+ *
+ * Note: Exported global parameters are tunable parameters with an exported
+ * global storage class designation.  Code generation will declare the memory for
+ * these parameters and exports their symbols.
+ *
+ */
+extern uint16_T Time_Base;             /* Variable: Time_Base
+                                        * Referenced by: '<S1>/SVPWM'
+                                        */
+
+/*
+ * Exported States
+ *
+ * Note: Exported states are block states with an exported global
+ * storage class designation.  Code generation will declare the memory for these
+ * states and exports their symbols.
+ *
+ */
+extern real32_T Ud_Set;                /* '<S1>/Data Store Memory' */
+extern real32_T Uq_Set;                /* '<S1>/Data Store Memory1' */
 
 /* Model entry point functions */
 extern void MI_FOC_initialize(void);
@@ -117,18 +127,6 @@ extern SVPWM_OutCmp_type SVPWM_OutCmp;
 
 /* Real-time Model object */
 extern RT_MODEL *const rtM;
-
-/*-
- * These blocks were eliminated from the model due to optimizations:
- *
- * Block '<S1>/Scope' : Unused code path elimination
- * Block '<S1>/Scope1' : Unused code path elimination
- * Block '<S1>/Scope2' : Unused code path elimination
- * Block '<S1>/Scope3' : Unused code path elimination
- * Block '<S1>/Scope4' : Unused code path elimination
- * Block '<S6>/Data Type Conversion1' : Eliminate redundant data type conversion
- * Block '<S6>/Data Type Conversion2' : Eliminate redundant data type conversion
- */
 
 /*-
  * The generated code includes comments that allow you to trace directly
@@ -153,9 +151,6 @@ extern RT_MODEL *const rtM;
  * '<S3>'   : 'FOC_Simulink_Modle/MI_FOC/Clarke'
  * '<S4>'   : 'FOC_Simulink_Modle/MI_FOC/Park'
  * '<S5>'   : 'FOC_Simulink_Modle/MI_FOC/SVPWM'
- * '<S6>'   : 'FOC_Simulink_Modle/MI_FOC/ThreePhase'
- * '<S7>'   : 'FOC_Simulink_Modle/MI_FOC/ThreePhase/Freq_Gener'
- * '<S8>'   : 'FOC_Simulink_Modle/MI_FOC/ThreePhase/Freq_Gener/Angle_Generate'
  */
 #endif                                 /* RTW_HEADER_MI_FOC_h_ */
 

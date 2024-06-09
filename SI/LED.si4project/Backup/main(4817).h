@@ -1,6 +1,6 @@
 /*!
-    \file    systick.c
-    \brief   the systick configuration file
+    \file    main.h
+    \brief   the header file of main 
 
     \version 2017-02-10, V1.0.0, firmware for GD32F30x
     \version 2018-10-10, V1.1.0, firmware for GD32F30x
@@ -35,89 +35,22 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 OF SUCH DAMAGE.
 */
 
-#include "gd32f30x.h"
-#include "systick.h"
-
-/*!
-    \brief      configure systick
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void systick_config(void)
-{
-    /* setup systick timer for 1000Hz interrupts */
-    if (SysTick_Config(SystemCoreClock / 1000U)){
-        /* capture error */
-        while (1){
-        }
-    }
-
-}
-
-/*!
-    \brief      delay_1ms
-    \param[in]  timecnt_ms
-    \param[out] none
-    \retval     none
-*/
-
-void delay_1ms(uint32_t Timecnt_ms)
-{
-	uint32_t delay = SysTick->VAL;
-	while((SysTick->VAL - delay) <= (Timecnt_ms*(SystemCoreClock / 1000U))){}
-}
-
-/*!
-    \brief      delay_1us
-    \param[in]  timecnt_us
-    \param[out] none
-    \retval     none
-*/
-
-void delay_1us(uint32_t Timecnt_us)
-{
-	uint32_t delay = SysTick->VAL;
-	while((SysTick->VAL - delay) <= (Timecnt_us*(SystemCoreClock / 1000000U))){}
-}
+#ifndef MAIN_H
+#define MAIN_H
+#include "gd32f307c_eval.h"
+#include "BSP_as5047p.h"
+#include "BSP_drv8323rs.h"
+#include "BSP_MotorPwm.h"
+#include "BSP_AdcSample.h"
+#include "BSP_Clock.h"
+#include "BSP_Port.h"
 
 
+#include "MI_FOC.h"
 
-/*!
-    \brief      configure NVIC
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void NVIC_Config(void)
-{
-	/* pre-emption priority: 0 BIT*/
-	/* subpriority: 4 BIT*/
-	nvic_priority_group_set(NVIC_PRIGROUP_PRE4_SUB0);
-	
-	/* configure the EXTI handler priority */
-    NVIC_SetPriority(EXTI10_15_IRQn, 0x00U);
+/* led spark function */
+void led_spark(void);
+void Report_Drv8323_FaultInfo(void);
 
 
-	/* configure the ADC handler priority */
-    NVIC_SetPriority(ADC0_1_IRQn, 0x01U);
-
-	/* configure the TIMER0 Update handler priority */
-    NVIC_SetPriority(TIMER0_UP_IRQn, 0x02U);
-
-}
-
-void System_Interrup_Enable(void)
-{
-	/* enable EXTI interrupt */
-    NVIC_EnableIRQ(EXTI10_15_IRQn);
-
-	/* enable ADC interrupt */
-    NVIC_EnableIRQ(ADC0_1_IRQn);
-
-	/* enable TIMER0 Update interrupt */
-    NVIC_EnableIRQ(TIMER0_UP_IRQn);
-
-}
-
-
+#endif /* MAIN_H */

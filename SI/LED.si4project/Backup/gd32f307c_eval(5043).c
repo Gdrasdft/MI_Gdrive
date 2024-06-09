@@ -1,6 +1,6 @@
 /*!
-    \file    systick.c
-    \brief   the systick configuration file
+    \file    gd32f307c_eval.c
+    \brief   firmware functions to manage leds, keys, COM ports
 
     \version 2017-02-10, V1.0.0, firmware for GD32F30x
     \version 2018-10-10, V1.1.0, firmware for GD32F30x
@@ -35,89 +35,24 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSI
 OF SUCH DAMAGE.
 */
 
-#include "gd32f30x.h"
-#include "systick.h"
+#include <gd32f30x.h>
+#include "gd32f307c_eval.h"
 
 /*!
-    \brief      configure systick
-    \param[in]  none
+    \brief      configure COM port
+    \param[in]  com: COM on the board
+      \arg        EVAL_COM0: COM0 on the board
+      \arg        EVAL_COM1: COM1 on the board
     \param[out] none
     \retval     none
 */
-void systick_config(void)
+void gd_eval_com_init(uint32_t com)
 {
-    /* setup systick timer for 1000Hz interrupts */
-    if (SysTick_Config(SystemCoreClock / 1000U)){
-        /* capture error */
-        while (1){
-        }
-    }
-
+    /* USART configure */
+    usart_deinit(com);
+    usart_baudrate_set(com, 115200U);
+    usart_receive_config(com, USART_RECEIVE_ENABLE);
+    usart_transmit_config(com, USART_TRANSMIT_ENABLE);
+    usart_enable(com);
 }
-
-/*!
-    \brief      delay_1ms
-    \param[in]  timecnt_ms
-    \param[out] none
-    \retval     none
-*/
-
-void delay_1ms(uint32_t Timecnt_ms)
-{
-	uint32_t delay = SysTick->VAL;
-	while((SysTick->VAL - delay) <= (Timecnt_ms*(SystemCoreClock / 1000U))){}
-}
-
-/*!
-    \brief      delay_1us
-    \param[in]  timecnt_us
-    \param[out] none
-    \retval     none
-*/
-
-void delay_1us(uint32_t Timecnt_us)
-{
-	uint32_t delay = SysTick->VAL;
-	while((SysTick->VAL - delay) <= (Timecnt_us*(SystemCoreClock / 1000000U))){}
-}
-
-
-
-/*!
-    \brief      configure NVIC
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void NVIC_Config(void)
-{
-	/* pre-emption priority: 0 BIT*/
-	/* subpriority: 4 BIT*/
-	nvic_priority_group_set(NVIC_PRIGROUP_PRE4_SUB0);
-	
-	/* configure the EXTI handler priority */
-    NVIC_SetPriority(EXTI10_15_IRQn, 0x00U);
-
-
-	/* configure the ADC handler priority */
-    NVIC_SetPriority(ADC0_1_IRQn, 0x01U);
-
-	/* configure the TIMER0 Update handler priority */
-    NVIC_SetPriority(TIMER0_UP_IRQn, 0x02U);
-
-}
-
-void System_Interrup_Enable(void)
-{
-	/* enable EXTI interrupt */
-    NVIC_EnableIRQ(EXTI10_15_IRQn);
-
-	/* enable ADC interrupt */
-    NVIC_EnableIRQ(ADC0_1_IRQn);
-
-	/* enable TIMER0 Update interrupt */
-    NVIC_EnableIRQ(TIMER0_UP_IRQn);
-
-}
-
 

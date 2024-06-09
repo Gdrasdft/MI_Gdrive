@@ -38,12 +38,8 @@ OF SUCH DAMAGE.
 #include "gd32f30x.h"
 #include "systick.h"
 #include "arm_math.h"
-#include "main.h"
-
-#if PRINT_MOTHD == USE_C_STANDARD
 #include <stdio.h>
-#endif
-
+#include "main.h"
 
 /*!
     \brief      main function
@@ -67,7 +63,7 @@ int main(void)
 	Port_Config();
 
 	/* configure perphieal Usart */
-	Usart_com_init(USART1);
+	gd_eval_com_init(EVAL_COM1);
 
 	/* configure perphieal Adc */
 	adc_config();
@@ -82,17 +78,9 @@ int main(void)
 	timer_config();
 	
 	delay_1ms(100);
-
-	/* Init UsartCOM Necessary Data */
-	Usart_ComDataInit();
-	
-	/* Init NTC Necessary Data */
-	NTC_Config_DataInit();
-	
 	/* configure Ecu_device Drv8323 */
-	DRV8323_Init_SYSTEM();
-	
-	/* Init Foc Necessary Data */
+	DRV8323_Init_ResultPrint();
+
 	MI_FOC_initialize();
 
 	/* Enable system Interrupt */
@@ -101,25 +89,51 @@ int main(void)
 	
     while (1)
 	{
-		User_SofeTrig_RegularGroupConver();
-		Usart_CH_Frame[0].f_data = GET_NTC_TEMP(adc_value[0]);
-		Usart_CH_Frame[1].f_data = GET_NTC_TEMP(adc_value[1]);
-		
-		Usart_PC_PrintDeal(USART1,4);
-//		printf("%f,%f,%f,%f,%f,%f\n",RtrAngle,rtU.Theta,FOC_Input_VolCur.Udc,rtU.Ia,rtU.Ib,rtU.Ic);
-//		printf("%f,%f\n",Stator_Temp,PCB_Temp);
+//		printf("CURRENT FaultStatus = %d,%d\n", drv8323rs_data[0],drv8323rs_data[1]);
 
+		User_SofeTrig_RegularGroupConver();
+//		printf("CURRENT ANGLE: %f\n", angle_phy);
+		
+        /*timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_0,pulse-1);
+		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_1,0);
+		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_2,0);
+		delay_1ms(Time);
+		
+		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_0,pulse/2-1);
+		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_1,pulse/2-1);
+		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_2,0);
+		delay_1ms(Time);
+		
+		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_0,0);
+		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_1,pulse/2-1);
+		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_2,0);
+		delay_1ms(Time);
+		
+		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_0,0);
+		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_1,pulse/2-1);
+		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_2,pulse/2-1);
+		delay_1ms(Time);
+		
+		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_0,0);
+		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_1,0);
+		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_2,pulse-1);
+		delay_1ms(Time);
+		
+		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_0,pulse/2-1);
+		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_1,0);
+		timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_2,pulse/2-1);
+		delay_1ms(Time);*/
+		//printf("ThreePhase: %f,%f,%f,%f,%f,%f,%f\n",SVPWM_OutCmp.Tcmp1,SVPWM_OutCmp.Tcmp2,SVPWM_OutCmp.Tcmp3,ClarkeCur.Ialpha,ClarkeCur.Ibeta,Park_Cur.Id,Park_Cur.Iq);
 	}
 }
 
-#if PRINT_MOTHD == USE_C_STANDARD
+
 /* retarget the C library printf function to the USART */
 int fputc(int ch, FILE *f)
 {
-    usart_data_transmit(USART1, (uint8_t)ch);
-    while(RESET == usart_flag_get(USART1, USART_FLAG_TBE));
+    usart_data_transmit(EVAL_COM1, (uint8_t)ch);
+    while(RESET == usart_flag_get(EVAL_COM1, USART_FLAG_TBE));
 
     return ch;
 }
-#endif
 

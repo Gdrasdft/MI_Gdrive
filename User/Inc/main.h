@@ -48,9 +48,9 @@ OF SUCH DAMAGE.
 
 #include "MI_FOC.h"
 
-/* led spark function */
-void led_spark(void);
-void Report_Drv8323_FaultInfo(void);
+#define USE_C_STANDARD 1
+#define USE_USART_FUNC 2
+#define PRINT_MOTHD USE_USART_FUNC
 
 
 #endif /* MAIN_H */

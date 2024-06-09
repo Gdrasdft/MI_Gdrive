@@ -6,7 +6,6 @@
 #endif
 #if PRINT_MOTHD == USE_USART_FUNC
 #include "gd32f307c_eval.h"
-#include <string.h>
 #endif
 
 
@@ -224,9 +223,7 @@ void DRV8323_Init_SYSTEM(void)
 	{
 		if(Result&BIT(Driver_Control))
 		{
-			/*Try Aagain*/
 			Drv8323_WriteCmd(Driver_Control, DRI_CTL_DATA.cmd);
-			/*Try Again Fail*/
 			if(DRI_CTL_DATA.cmd != Drv8323_ReadData(Driver_Control))
 			{
 				SysErr |= BIT(Driver_Control);
@@ -235,9 +232,7 @@ void DRV8323_Init_SYSTEM(void)
 		}
 		if(Result&BIT(Gate_Drive_HS))
 		{
-			/*Try Aagain*/
 			Drv8323_WriteCmd(Gate_Drive_HS, GATE_HS_DATA.cmd);
-			/*Try Again Fail*/
 			if(GATE_HS_DATA.cmd != Drv8323_ReadData(Gate_Drive_HS))
 			{
 				SysErr |= BIT(Gate_Drive_HS);
@@ -246,9 +241,7 @@ void DRV8323_Init_SYSTEM(void)
 		}
 		if(Result&BIT(Gate_Drive_LS))
 		{
-			/*Try Aagain*/
 			Drv8323_WriteCmd(Gate_Drive_LS, GATE_LS_DATA.cmd);
-			/*Try Again Fail*/
 			if(GATE_LS_DATA.cmd != Drv8323_ReadData(Gate_Drive_LS))
 			{
 				SysErr |= BIT(Gate_Drive_LS);
@@ -257,9 +250,7 @@ void DRV8323_Init_SYSTEM(void)
 		}
 		if(Result&BIT(OCP_Control))
 		{
-			/*Try Aagain*/
 			Drv8323_WriteCmd(OCP_Control, OCP_CTL_DATA.cmd);
-			/*Try Again Fail*/
 			if(OCP_CTL_DATA.cmd != Drv8323_ReadData(OCP_Control))
 			{
 				SysErr |= BIT(OCP_Control);
@@ -268,9 +259,7 @@ void DRV8323_Init_SYSTEM(void)
 		}	
 		if(Result&BIT(CSA_Control))
 		{
-			/*Try Aagain*/
 			Drv8323_WriteCmd(CSA_Control, OSA_CTL_DATA.cmd);
-			/*Try Again Fail*/
 			if(OSA_CTL_DATA.cmd != Drv8323_ReadData(CSA_Control))
 			{
 				SysErr |= BIT(CSA_Control);
@@ -282,20 +271,17 @@ void DRV8323_Init_SYSTEM(void)
 			SysErr = 0xFFFF;
 		}
 	}
-/*--------------------------------------- UpLoad Init Result --------------------------------------------------*/
+	
 	if(SysErr == 0)
 	{
 #if PRINT_MOTHD == USE_C_STANDARD
 		printf("DRV8323 INIT SUCCESS!\n");
 #endif
 #if PRINT_MOTHD == USE_USART_FUNC
-//		length = GetStringLength(value);
-//		memcpy(PrintString, value, length);
-//		PrintString[length+1] = '\0';
 		UsartSendStr(USART1,"DRV8323 INIT SUCCESS!\n");
 #endif
+
 	}
-	
 	else
 	{
 #if PRINT_MOTHD == USE_C_STANDARD

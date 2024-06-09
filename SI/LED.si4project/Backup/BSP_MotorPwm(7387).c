@@ -51,15 +51,15 @@ void timer_config(void)
     timer_channel_output_config(TIMER0,TIMER_CH_2,&timer_ocintpara);
 	timer_channel_output_config(TIMER0,TIMER_CH_3,&timer_ocintpara);
 
-    timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_0,0);
+    timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_0,499);
     timer_channel_output_mode_config(TIMER0,TIMER_CH_0,TIMER_OC_MODE_PWM0);
     timer_channel_output_shadow_config(TIMER0,TIMER_CH_0,TIMER_OC_SHADOW_ENABLE);
 
-    timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_1,0);
+    timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_1,499);
     timer_channel_output_mode_config(TIMER0,TIMER_CH_1,TIMER_OC_MODE_PWM0);
     timer_channel_output_shadow_config(TIMER0,TIMER_CH_1,TIMER_OC_SHADOW_ENABLE);
 
-    timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_2,0);
+    timer_channel_output_pulse_value_config(TIMER0,TIMER_CH_2,499);
     timer_channel_output_mode_config(TIMER0,TIMER_CH_2,TIMER_OC_MODE_PWM0);
     timer_channel_output_shadow_config(TIMER0,TIMER_CH_2,TIMER_OC_SHADOW_ENABLE);
 

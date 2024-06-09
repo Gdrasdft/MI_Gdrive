@@ -46,26 +46,46 @@ OF SUCH DAMAGE.
 #include "systick.h"
 
 /* COM_Usart */
-#define COMn                             2U
+#define UART_DMA_ENABLE 1
+#define CH_COUNT 10
 
-#define EVAL_COM0                        USART0
-#define EVAL_COM0_CLK                    RCU_USART0
-#define EVAL_COM0_TX_PIN                 GPIO_PIN_9
-#define EVAL_COM0_RX_PIN                 GPIO_PIN_10
-#define EVAL_COM0_GPIO_PORT              GPIOA
-#define EVAL_COM0_GPIO_CLK               RCU_GPIOA
-
-#define EVAL_COM1                        USART1
-#define EVAL_COM1_CLK                    RCU_USART1
-#define EVAL_COM1_TX_PIN                 GPIO_PIN_2
-#define EVAL_COM1_RX_PIN                 GPIO_PIN_3
-#define EVAL_COM1_GPIO_PORT              GPIOA
-#define EVAL_COM1_GPIO_CLK               RCU_GPIOA
 
 
 /* configure COM port */
-void gd_eval_com_init(uint32_t com);
+void Usart_com_init(uint32_t com);
+void Usart_ComDataInit(void);
+void UsartSendByte(uint32_t com, uint8_t Data);
+void UsartSendStr(uint32_t com, char *Str);
+void UsartSendUint16(uint32_t com, uint16_t Data);
+void UsartSendFloat(uint32_t com, float Data);
+void Usart_PC_PrintDeal(uint32_t com, uint8_t numofch);
+uint8_t GetStringLength(const char* string);
 
+
+
+
+typedef union uint16_data
+{
+	uint16_t u_data;
+	uint8_t u_data_byte[2];
+}uint16_frameDatatype;
+
+
+typedef union float_data
+{
+	float f_data;
+	uint8_t f_data_byte[4];
+}float_frameDatatype;
+
+typedef struct USART_FRAME
+{
+	float_frameDatatype* ch_data;
+	uint8_t ch_num;
+	uint8_t* check_tail;
+	uint8_t check_length;
+}Usart_Frame_DateType;
+
+extern float_frameDatatype Usart_CH_Frame[CH_COUNT];
 
 #ifdef __cplusplus
 }

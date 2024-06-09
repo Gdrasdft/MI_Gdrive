@@ -174,20 +174,21 @@ void TIMER0_UP_IRQHandler(void)
 		{
 			UpCountNum++;
 			GPIO_BOP(GPIOC) = GPIO_PIN_14;
-			TIMER_CH3CV(TIMER0) = ADC_SAMPLE_DELAY_CNT;
+			TIMER_INTF(TIMER0) = (~(uint32_t)TIMER_INTF_CH3IF);
+			TIMER_CH3CV(TIMER0) = timer_initpara.period-50;
 			TIMER_CHCTL1(TIMER0) &= (~(uint32_t)TIMER_CHCTL1_CH3COMCTL);
-        	TIMER_CHCTL1(TIMER0) |= (uint32_t)((uint32_t)(TIMER_OC_MODE_PWM1) << 8U);
+        	TIMER_CHCTL1(TIMER0) |= (uint32_t)((uint32_t)(TIMER_OC_MODE_PWM0) << 8U);
 		}
 		//向下计数
 		else
 		{
 			DowmCountNum++;
 			GPIO_BC(GPIOC) = GPIO_PIN_14;
-			TIMER_CH3CV(TIMER0) = timer_initpara.period - ADC_SAMPLE_DELAY_CNT;
+			TIMER_INTF(TIMER0) = (~(uint32_t)TIMER_INTF_CH3IF);
+			TIMER_CH3CV(TIMER0) = timer_initpara.period-50;
 			TIMER_CHCTL1(TIMER0) &= (~(uint32_t)TIMER_CHCTL1_CH3COMCTL);
-        	TIMER_CHCTL1(TIMER0) |= (uint32_t)((uint32_t)(TIMER_OC_MODE_PWM0) << 8U);
+        	TIMER_CHCTL1(TIMER0) |= (uint32_t)((uint32_t)(TIMER_OC_MODE_PWM1) << 8U);
 		}
-		//获取磁编码器转子角度
 		RtrAngle = (float)(AS5047_GetAngle())/ANGLE_DIGITAL*ANGLE_CYCLE;
 	}
 }
@@ -198,11 +199,11 @@ void TIMER0_UP_IRQHandler(void)
     \param[out] none
     \retval     none
 */
-uint8_t MotorRun_Enable = 0;
-float MotorRun_Freq = 1;
-
 void ADC0_1_IRQHandler(void)
 {
+	static uint16_t cnt = 0;
+	GPIO_BOP(GPIOC) = GPIO_PIN_13;
+	cnt++;
     /* Judge ADC IRQ TYPE */
 	if(((ADC_STAT(MI_FOC_ADC0) & ADC_STAT_WDE)) || ((ADC_STAT(MI_FOC_ADC1) & ADC_STAT_WDE)))
 	{
@@ -210,43 +211,23 @@ void ADC0_1_IRQHandler(void)
 		adc_interrupt_flag_clear(MI_FOC_ADC0, ADC_INT_FLAG_WDE);
 		adc_interrupt_flag_clear(MI_FOC_ADC1, ADC_INT_FLAG_WDE);
 	    adc_interrupt_flag_clear(ADC0, ADC_INT_FLAG_EOIC);
+		if(cnt > 5000)
+		{
+			cnt = 0;
+//			gd_eval_led_toggle(LED3);
+		}
 	}
 	else
 	{
 		//永磁同步电机矢量控制中断
 		adc_interrupt_flag_clear(ADC0, ADC_INT_FLAG_EOIC);
-		if(CNT_DIR_DOWN == TimerCouner_Dir)
+		if(cnt > 10000)
 		{
-			GPIO_BOP(GPIOC) = GPIO_PIN_13;
-			FOC_ADC_REG[0] = (uint16_t)(ADC_IDATA1(ADC0)&ADC_IDATAX_IDATAN);
-			FOC_ADC_REG[1] = (uint16_t)(ADC_IDATA0(ADC0)&ADC_IDATAX_IDATAN);
-			FOC_ADC_REG[2] = (uint16_t)(ADC_IDATA0(ADC1)&ADC_IDATAX_IDATAN);
-			GPIO_BC(GPIOC) = GPIO_PIN_13;
-			FOC_Input_VolCur.Udc = (((float)FOC_ADC_REG[0])/ADC_REG_RANGE)*ADC_VOL_REFER*MIFOC_VOL_ADC_FACTOR;
-			rtU.Ib = (0.5F-(((float)FOC_ADC_REG[1])/ADC_REG_RANGE))*ADC_VOL_REFER/20.0F/0.01F;
-			rtU.Ic = (0.5F-(((float)FOC_ADC_REG[2])/ADC_REG_RANGE))*ADC_VOL_REFER/20.0F/0.01F;
-			rtU.Ia = 0-rtU.Ib-rtU.Ic;
-			if(MotorRun_Enable)
-			{
-				rtU.Theta += 2*3.14159265358979f/10000.0f*MotorRun_Freq;
-				if(rtU.Theta >= 2*3.14159265358979f)
-				{
-					rtU.Theta = 0;
-				}
-				MI_FOC_step();
-			}
-			else
-			{
-				SVPWM_OutCmp.Tcmp1 = 0;
-				SVPWM_OutCmp.Tcmp2 = 0;
-				SVPWM_OutCmp.Tcmp3 = 0;
-			}
-			TIMER_CH0CV(TIMER0) = (uint32_t)SVPWM_OutCmp.Tcmp1;
-			TIMER_CH1CV(TIMER0) = (uint32_t)SVPWM_OutCmp.Tcmp2;
-			TIMER_CH2CV(TIMER0) = (uint32_t)SVPWM_OutCmp.Tcmp3;
-			
+			cnt = 0;
+//			gd_eval_led_toggle(LED3);
 		}
 	}
+	GPIO_BC(GPIOC) = GPIO_PIN_13;
 }
 
 

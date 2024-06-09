@@ -10,6 +10,10 @@
 
 void Port_Config(void);
 
+void led_spark(void);
+
+
+
 
 #ifdef __cplusplus
 }

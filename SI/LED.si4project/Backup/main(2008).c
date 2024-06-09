@@ -1,6 +1,6 @@
 /*!
-    \file    systick.c
-    \brief   the systick configuration file
+    \file    main.c
+    \brief   led spark with systick, USART print and key example
 
     \version 2017-02-10, V1.0.0, firmware for GD32F30x
     \version 2018-10-10, V1.1.0, firmware for GD32F30x
@@ -37,87 +37,87 @@ OF SUCH DAMAGE.
 
 #include "gd32f30x.h"
 #include "systick.h"
+#include "arm_math.h"
+#include "main.h"
+
+#if PRINT_MOTHD == USE_C_STANDARD
+#include <stdio.h>
+#endif
+
 
 /*!
-    \brief      configure systick
+    \brief      main function
     \param[in]  none
     \param[out] none
     \retval     none
 */
-void systick_config(void)
+
+int main(void)
 {
-    /* setup systick timer for 1000Hz interrupts */
-    if (SysTick_Config(SystemCoreClock / 1000U)){
-        /* capture error */
-        while (1){
-        }
-    }
+    /* configure CoreM4 systick */
+    systick_config();
 
-}
-
-/*!
-    \brief      delay_1ms
-    \param[in]  timecnt_ms
-    \param[out] none
-    \retval     none
-*/
-
-void delay_1ms(uint32_t Timecnt_ms)
-{
-	uint32_t delay = SysTick->VAL;
-	while((SysTick->VAL - delay) <= (Timecnt_ms*(SystemCoreClock / 1000U))){}
-}
-
-/*!
-    \brief      delay_1us
-    \param[in]  timecnt_us
-    \param[out] none
-    \retval     none
-*/
-
-void delay_1us(uint32_t Timecnt_us)
-{
-	uint32_t delay = SysTick->VAL;
-	while((SysTick->VAL - delay) <= (Timecnt_us*(SystemCoreClock / 1000000U))){}
-}
-
-
-
-/*!
-    \brief      configure NVIC
-    \param[in]  none
-    \param[out] none
-    \retval     none
-*/
-void NVIC_Config(void)
-{
-	/* pre-emption priority: 0 BIT*/
-	/* subpriority: 4 BIT*/
-	nvic_priority_group_set(NVIC_PRIGROUP_PRE4_SUB0);
+	/* configure CoreM4 NVIC */
+	NVIC_Config();
 	
-	/* configure the EXTI handler priority */
-    NVIC_SetPriority(EXTI10_15_IRQn, 0x00U);
+	/* configure perphieal clock */
+	clock_config();
+	
+	/* configure perphieal GPIO */
+	Port_Config();
 
+	/* configure perphieal Usart */
+	gd_eval_com_init(EVAL_COM1);
 
-	/* configure the ADC handler priority */
-    NVIC_SetPriority(ADC0_1_IRQn, 0x01U);
+	/* configure perphieal Adc */
+	adc_config();
+	
+	/* configure perphieal SPI2 -- AS5740P */
+	spi2_config();
+	
+	/* configure perphieal SPI1 -- Drv8323 */
+	spi1_config();
 
-	/* configure the TIMER0 Update handler priority */
-    NVIC_SetPriority(TIMER0_UP_IRQn, 0x02U);
+	/* configure perphieal TIMER0 */
+	timer_config();
+	
+	delay_1ms(100);
 
+	/* Init UsartCOM Necessary Data */
+	Usart_ComDataInit();
+	
+	/* Init NTC Necessary Data */
+	NTC_Config_DataInit();
+	
+	/* configure Ecu_device Drv8323 */
+	DRV8323_Init_SYSTEM();
+	
+	/* Init Foc Necessary Data */
+	MI_FOC_initialize();
+
+	/* Enable system Interrupt */
+	System_Interrup_Enable();
+
+	
+    while (1)
+	{
+		User_SofeTrig_RegularGroupConver();
+		Stator_Temp = GET_NTC_TEMP(adc_value[0]);
+		PCB_Temp = GET_NTC_TEMP(adc_value[1]);
+//		printf("%f,%f,%f,%f,%f,%f\n",RtrAngle,rtU.Theta,FOC_Input_VolCur.Udc,rtU.Ia,rtU.Ib,rtU.Ic);
+//		printf("%f,%f\n",Stator_Temp,PCB_Temp);
+
+	}
 }
 
-void System_Interrup_Enable(void)
+#if PRINT_MOTHD == USE_C_STANDARD
+/* retarget the C library printf function to the USART */
+int fputc(int ch, FILE *f)
 {
-	/* enable EXTI interrupt */
-    NVIC_EnableIRQ(EXTI10_15_IRQn);
+    usart_data_transmit(EVAL_COM1, (uint8_t)ch);
+    while(RESET == usart_flag_get(EVAL_COM1, USART_FLAG_TBE));
 
-	/* enable ADC interrupt */
-    NVIC_EnableIRQ(ADC0_1_IRQn);
-
-	/* enable TIMER0 Update interrupt */
-    NVIC_EnableIRQ(TIMER0_UP_IRQn);
-
+    return ch;
 }
-
+#endif
 

@@ -215,7 +215,7 @@ void ADC0_1_IRQHandler(void)
 	{
 		//永磁同步电机矢量控制中断
 		adc_interrupt_flag_clear(ADC0, ADC_INT_FLAG_EOIC);
-		if(CNT_DIR_DOWN == TimerCouner_Dir)
+		if(CNT_DIR_UP == TimerCouner_Dir)
 		{
 			GPIO_BOP(GPIOC) = GPIO_PIN_13;
 			FOC_ADC_REG[0] = (uint16_t)(ADC_IDATA1(ADC0)&ADC_IDATAX_IDATAN);

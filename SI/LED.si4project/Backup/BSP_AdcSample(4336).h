@@ -68,37 +68,9 @@
 
 extern uint16_t adc_value[4];
 extern uint16_t FOC_ADC_REG[3];
-extern float Stator_Temp;
-extern float PCB_Temp;
-
-#define NTC_LTB 1
-#define NTC_KELVIN 2
-#define GET_NTCRES_MOTHD NTC_KELVIN
-
-typedef struct NTC_TEMP
-{
-	uint16_t ShortAD_Value;
-	uint16_t BreakAD_Value;
-#if GET_NTCRES_MOTHD == NTC_LTB
-	const uint16_t* LTB_Array;
-	int16_t StartTemp;
-	uint16_t TempStep;
-#endif
-#if GET_NTCRES_MOTHD == NTC_KELVIN
-	uint16_t Factor_B;
-	uint16_t DivdR;
-	uint16_t RateR;
-	float RateTemp;
-	float RateKelVin;
-	float ErrComp;
-#endif
-}NtcTemp;
-
 
 void adc_config(void);
 void User_SofeTrig_RegularGroupConver(void);
-void NTC_Config_DataInit(void);
-float GET_NTC_TEMP(uint16_t Reg_Value);
 
 
 #ifdef __cplusplus

@@ -93,7 +93,7 @@ void NVIC_Config(void)
 {
 	/* pre-emption priority: 0 BIT*/
 	/* subpriority: 4 BIT*/
-	nvic_priority_group_set(NVIC_PRIGROUP_PRE4_SUB0);
+	nvic_priority_group_set(NVIC_PRIGROUP_PRE0_SUB4);
 	
 	/* configure the EXTI handler priority */
     NVIC_SetPriority(EXTI10_15_IRQn, 0x00U);
@@ -103,7 +103,7 @@ void NVIC_Config(void)
     NVIC_SetPriority(ADC0_1_IRQn, 0x01U);
 
 	/* configure the TIMER0 Update handler priority */
-    NVIC_SetPriority(TIMER0_UP_IRQn, 0x02U);
+    NVIC_SetPriority(TIMER0_UP_IRQn, 0x01U);
 
 }
 

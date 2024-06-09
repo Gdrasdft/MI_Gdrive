@@ -6,6 +6,7 @@
 #endif
 
 #include "gd32f30x.h"
+#include <stdio.h>
 
 //PIN Config
 #define GPIO_PORT_ENABLE      GPIOA
@@ -200,7 +201,7 @@ typedef union DATA_FRAME_DRV
 
 void spi1_config(void);
 uint16_t DRV8323_Init_Device(void);
-void DRV8323_Init_SYSTEM(void);
+void DRV8323_Init_ResultPrint(void);
 void Report_Drv8323_FaultInfo(void);
 void DRV8323_DeviceReset(void);
 void DRV8323_FaultReset(void);

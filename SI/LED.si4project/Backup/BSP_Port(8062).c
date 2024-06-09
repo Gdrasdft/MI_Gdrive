@@ -17,9 +17,6 @@ void Port_Config(void)
 	gpio_init(GPIOC, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_0);
 	gpio_init(GPIOC, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_1);	
 	gpio_init(GPIOC, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_3);
-//	gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_5);
-//	gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_6);	
-//	gpio_init(GPIOA, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_7);
 	gpio_init(GPIOC, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_2);
 	gpio_init(GPIOB, GPIO_MODE_AIN, GPIO_OSPEED_MAX, GPIO_PIN_0);
 
@@ -51,4 +48,33 @@ void Port_Config(void)
 }
 
 
+/*!
+    \brief      toggle the led every 500ms
+    \param[in]  none
+    \param[out] none
+    \retval     none
+*/
+void led_spark(void)
+{
+    static __IO uint32_t timingdelaylocal = 0U;
+
+    if(timingdelaylocal)
+		{
+
+        if(timingdelaylocal < 500U)
+		{
+            //gd_eval_led_on(LED3);
+        }
+		else
+		{
+            //gd_eval_led_off(LED3);
+        }
+
+        timingdelaylocal--;
+    }
+		else
+		{
+        timingdelaylocal = 1000U;
+    }
+}
 
